@@ -1,0 +1,9 @@
+<toolSet name="External Tools">
+  <tool name="Lolipop Phone" description="Quick Launch" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="C:\Program Files (x86)\Microsoft Emulator Manager\1.0\emulatorcmd.exe" />
+      <option name="PARAMETERS" value="/sku:Android launch /id:457DE92E-DBC3-40E5-AE9A-2D7F3FD0B91C" />
+      <option name="WORKING_DIRECTORY" value="C:/Program Files (x86)/Microsoft Emulator Manager/1.0" />
+    </exec>
+  </tool>
+</toolSet>
