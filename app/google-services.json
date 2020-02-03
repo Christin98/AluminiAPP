@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "18991910369",
+    "firebase_url": "https://alumniconnect-a3500.firebaseio.com",
+    "project_id": "alumniconnect-a3500",
+    "storage_bucket": "alumniconnect-a3500.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18991910369:android:5ca5b8641f1f4d5c3716a0",
+        "android_client_info": {
+          "package_name": "com.project.major.alumniapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18991910369-j9ldulljuc3v0espnbmma8s99a40t7p7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.major.alumniapp",
+            "certificate_hash": "25f40b4154b75fdd19c350b14620753e5d6449cc"
+          }
+        },
+        {
+          "client_id": "18991910369-mnu8bcbcdir0ap2j19u35f9263vbrdlo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7mU4yT4uROlkyYFriuhUeMvfwse3RBb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "18991910369-mnu8bcbcdir0ap2j19u35f9263vbrdlo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
