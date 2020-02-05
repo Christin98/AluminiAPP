@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.utils.AlertDialogManager;
+import com.project.major.alumniapp.utils.SessionManager;
 import com.sdsmdg.tastytoast.TastyToast;
 
 public class Login extends AppCompatActivity {
@@ -25,11 +27,15 @@ public class Login extends AppCompatActivity {
     TextView logo;
     LinearLayout new_user_layout;
     CardView login_card;
+    AlertDialogManager alertDialogManager = new AlertDialogManager();
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        sessionManager = new SessionManager(getApplicationContext());
 
         top_curve = findViewById(R.id.top_curve);
         email = findViewById(R.id.editText_login_email);
