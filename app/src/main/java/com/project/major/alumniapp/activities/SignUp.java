@@ -1,10 +1,12 @@
 package com.project.major.alumniapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,10 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.utils.AlertDialogManager;
+import com.project.major.alumniapp.utils.LoadingDialog;
+import com.project.major.alumniapp.utils.SessionManager;
 import com.sdsmdg.tastytoast.TastyToast;
 
 public class SignUp extends AppCompatActivity {
@@ -28,6 +39,12 @@ public class SignUp extends AppCompatActivity {
     LinearLayout already_have_account_layout;
     CardView register_card;
     AwesomeValidation validation;
+    AlertDialogManager alertDialogManager;
+    SessionManager sessionManager;
+    LoadingDialog loadingDialog;
+
+    FirebaseAuth auth;
+
 
 
     @Override
@@ -37,6 +54,10 @@ public class SignUp extends AppCompatActivity {
 
         validation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
         validation.setContext(this);
+
+        alertDialogManager = new AlertDialogManager();
+        sessionManager = new SessionManager(this);
+        loadingDialog = new LoadingDialog(this);
 
         top_curve = findViewById(R.id.top_curve);
         name = findViewById(R.id.editText_signup_name);
@@ -67,6 +88,8 @@ public class SignUp extends AppCompatActivity {
         Animation new_user_anim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.down_top);
         already_have_account_layout.startAnimation(new_user_anim);
 
+        auth = FirebaseAuth.getInstance();
+
         validation.addValidation(this, R.id.editText_signup_name, "(^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}).{2,}", R.string.nameerror);
         validation.addValidation(this, R.id.editText_signup_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         validation.addValidation(this, R.id.editText_signup_password, "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*]).{8,}", R.string.passwerror);
@@ -79,8 +102,44 @@ public class SignUp extends AppCompatActivity {
     }
     public void registerButton(View view) {
         if (validation.validate()) {
-            TastyToast.makeText(this,"Register Clicked",TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
-
+            String emailstr = email.toString().trim();
+            String pass = password.toString();
+            loadingDialog.showLoading();
+//            TastyToast.makeText(this,"Register Clicked",TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
+            auth.createUserWithEmailAndPassword(emailstr,pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        loadingDialog.hideLoading();
+                        FirebaseUser user = auth.getCurrentUser();
+                        alertDialogManager.showDialog(SignUp.this,"SUCCESS","User Successfully Created with email"+ user.getEmail()+".Please Verify your Email and login.",true);
+                        sendEmailVerification();
+                    }else {
+                        loadingDialog.hideLoading();
+                        alertDialogManager.showDialog(SignUp.this,"ERROR", "Something went wrong. Please check your details and try again.",false);
+                    }
+                }
+            });
         }
+    }
+
+    private void sendEmailVerification() {
+        final FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
+        user.sendEmailVerification().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignUp.this,
+                                    "Verification email sent to " + user.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            alertDialogManager.hidedialog();
+                            Toast.makeText(SignUp.this,
+                                    "Failed to send verification email.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }
