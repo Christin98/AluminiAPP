@@ -119,7 +119,7 @@
                         android:textColorHint="@color/white_hint"
                         android:hint="@string/full_name"
                         android:id="@+id/editText_signup_name"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/holo_red_light"
                         android:background="@android:color/transparent"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
@@ -147,7 +147,7 @@
                         android:textColorHint="@color/white_hint"
                         android:inputType="textEmailAddress"
                         android:id="@+id/editText_signup_email"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/holo_red_light"
                         android:background="@android:color/transparent"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
@@ -174,7 +174,7 @@
                         android:textColorHint="@color/white_hint"
                         android:inputType="textPassword"
                         android:id="@+id/editText_signup_password"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/holo_red_light"
                         android:background="@android:color/transparent"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
@@ -200,7 +200,7 @@
                         android:hint="@string/confirm_password"
                         android:inputType="textPassword"
                         android:id="@+id/editText_signup_passwordConfirm"
-                        android:textColor="@android:color/white"
+                        android:textColor="@android:color/holo_red_light"
                         android:background="@android:color/transparent"
                         android:layout_marginStart="10dp" />
                     </LinearLayout>
@@ -211,7 +211,6 @@
                         android:id="@+id/register_card"
                         app:cardElevation="8dp"
                         android:layout_margin="16dp"
-                        app:cardBackgroundColor="@color/green"
                         app:cardCornerRadius="24dp"
                         android:layout_gravity="center_horizontal">
                         <Button

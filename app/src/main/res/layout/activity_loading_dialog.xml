@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:alpha=".7"
+    android:background="@drawable/background_fade">
+
+    <LinearLayout
+        android:id="@+id/loading_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button_style"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:padding="6dp">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                app:lottie_rawRes="@raw/loading"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                app:lottie_repeatMode="restart"
+                app:lottie_repeatCount="50"/>
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/msg_tv_dia"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_margin="16dp"-->
+<!--            android:padding="6dp"-->
+<!--            android:fontFamily="serif-monospace"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/loading"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="18sp" />-->
+
+    </LinearLayout>
+
+</RelativeLayout>

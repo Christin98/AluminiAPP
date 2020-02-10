@@ -5,6 +5,7 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.utils.AlertDialogManager;
 import com.project.major.alumniapp.utils.SessionManager;
@@ -29,6 +32,7 @@ public class Login extends AppCompatActivity {
     CardView login_card;
     AlertDialogManager alertDialogManager = new AlertDialogManager();
     SessionManager sessionManager;
+    AwesomeValidation validation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         sessionManager = new SessionManager(getApplicationContext());
+        validation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
+        validation.setContext(this);
 
         top_curve = findViewById(R.id.top_curve);
         email = findViewById(R.id.editText_login_email);
@@ -62,6 +68,8 @@ public class Login extends AppCompatActivity {
         Animation new_user_anim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.down_top);
         new_user_layout.startAnimation(new_user_anim);
 
+        validation.addValidation(this, R.id.editText_login_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
+        validation.addValidation(this, R.id.editText_login_password, "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*]).{8,}", R.string.passwerror);
     }
 
     public void register(View view) {
@@ -69,8 +77,12 @@ public class Login extends AppCompatActivity {
     }
 
     public void loginButton(View view) {
-        Toast.makeText(this,"Login Clicked",Toast.LENGTH_SHORT).show();
-        TastyToast.makeText(this,"Login",TastyToast.LENGTH_SHORT,TastyToast.SUCCESS).show();
-        startActivity(new Intent(this, MainActivity.class));
+        if (validation.validate()) {
+//            Toast.makeText(this, "Validation Succesful", Toast.LENGTH_SHORT).show();
+            TastyToast.makeText(this, "Validation Succesful", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+            startActivity(new Intent(this, MainActivity.class));
+        } else {
+            TastyToast.makeText(this, "Validation Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
+        }
     }
 }

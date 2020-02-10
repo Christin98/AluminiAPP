@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     tools:context=".activities.Login">
 
     <ImageView
@@ -115,7 +114,7 @@
                             android:inputType="textEmailAddress"
                             android:padding="8dp"
                             android:text=""
-                            android:textColor="@android:color/white"
+                            android:textColor="@android:color/holo_red_light"
                             android:textColorHint="@color/white_hint"
                             android:textSize="20sp" />
                     </LinearLayout>
@@ -148,7 +147,7 @@
                             android:inputType="textPassword"
                             android:padding="8dp"
                             android:text=""
-                            android:textColor="@android:color/white"
+                            android:textColor="@android:color/holo_red_light"
                             android:textColorHint="@color/white_hint"
                             android:textSize="20sp" />
                     </LinearLayout>
@@ -160,8 +159,8 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="16dp"
                         app:cardBackgroundColor="@color/green"
-                        app:cardCornerRadius="24dp"
-                        app:cardElevation="8dp">
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
 
                         <Button
                             android:id="@+id/button_login"
