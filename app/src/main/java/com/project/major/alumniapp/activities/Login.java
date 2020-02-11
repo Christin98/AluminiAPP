@@ -1,5 +1,6 @@
 package com.project.major.alumniapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -13,14 +14,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.utils.AlertDialogManager;
+import com.project.major.alumniapp.utils.LoadingDialog;
 import com.project.major.alumniapp.utils.SessionManager;
 import com.sdsmdg.tastytoast.TastyToast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
@@ -33,6 +47,8 @@ public class Login extends AppCompatActivity {
     AlertDialogManager alertDialogManager = new AlertDialogManager();
     SessionManager sessionManager;
     AwesomeValidation validation;
+    LoadingDialog loadingDialog;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +56,11 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         sessionManager = new SessionManager(getApplicationContext());
+        sessionManager.checkLogin();
         validation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
         validation.setContext(this);
+        loadingDialog = new LoadingDialog(this);
+        auth = FirebaseAuth.getInstance();
 
         top_curve = findViewById(R.id.top_curve);
         email = findViewById(R.id.editText_login_email);
@@ -72,17 +91,56 @@ public class Login extends AppCompatActivity {
         validation.addValidation(this, R.id.editText_login_password, "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*]).{8,}", R.string.passwerror);
     }
 
-    public void register(View view) {
+    public void signUp(View view) {
         startActivity(new Intent(this, SignUp.class));
     }
 
     public void loginButton(View view) {
         if (validation.validate()) {
-//            Toast.makeText(this, "Validation Succesful", Toast.LENGTH_SHORT).show();
-            TastyToast.makeText(this, "Validation Succesful", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
-            startActivity(new Intent(this, MainActivity.class));
+            login(email.toString().trim(),password.toString());
+            loadingDialog.showLoading();
         } else {
             TastyToast.makeText(this, "Validation Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
         }
+    }
+
+    private void login(String email , String passw){
+        auth.signInWithEmailAndPassword(email,passw).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()){
+                loadingDialog.hideLoading();
+                FirebaseUser user = auth.getCurrentUser();
+                Map<String, String> users= new HashMap<>();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference ref = database.getReference("alumni-app").getRef().child(user.getUid());
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       for (DataSnapshot ds:dataSnapshot.getChildren()){
+                           users.put("name",ds.child("name").getValue(String.class));
+                       }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                if (user.isEmailVerified()){
+                    TastyToast.makeText(this, "Login Succesfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+                    sessionManager.createLoginSession(users.get("name"),email);
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                }else {
+                    signOut();
+                    TastyToast.makeText(this, "Login Error.Please Verify your Email First.", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+                }
+            }else {
+                loadingDialog.hideLoading();
+                alertDialogManager.showDialog(Login.this, "Login failed..", "Please enter username and password", false);
+            }
+        });
+    }
+    private void signOut(){
+        auth.signOut();
     }
 }

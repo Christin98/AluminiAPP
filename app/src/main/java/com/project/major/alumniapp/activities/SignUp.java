@@ -165,7 +165,7 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    void createDatabase(String email, String name, FirebaseUser user){
+    private void createDatabase(String email, String name, FirebaseUser user){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         String timestamp = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Timestamp(System.currentTimeMillis()));
         Map<String, String> users = new HashMap<>();
@@ -173,14 +173,12 @@ public class SignUp extends AppCompatActivity {
         users.put("name", name);
         users.put("uid",user.getUid());
         users.put("createdat",timestamp);
-        database.getReference("alumni-app").getRef().child(user.getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (!task.isSuccessful()){
-                    TastyToast.makeText(SignUp.this,"Error creating user database. Please try again.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
-                }
+        database.getReference("alumni-app").getRef().child(user.getUid()).setValue(users).addOnCompleteListener(this, task -> {
+            if (!task.isSuccessful()){
+                TastyToast.makeText(SignUp.this,"Error creating user database. Please try again.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
             }
         });
         user.delete();
     }
+
 }

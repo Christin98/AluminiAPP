@@ -113,7 +113,7 @@
 
     <!--Login/signup-->
 
-    <string name="forget_password">Forget Password</string>
+    <string name="forget_password">Forgot Password</string>
 
     <string name="forget_password_prompt">Next step will give you a new password on given email id</string>
 

@@ -208,7 +208,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:onClick="register"
+                    android:onClick="signUp"
                     android:padding="2dp"
                     android:text="@string/join_us"
                     android:textColor="@color/green"

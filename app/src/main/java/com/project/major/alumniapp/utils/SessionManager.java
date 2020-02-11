@@ -24,6 +24,13 @@ public class SessionManager {
         editor = preferences.edit();
     }
 
+    public void createLoginSession(String name, String email){
+        editor.putBoolean(IS_LOGIN, true);
+        editor.putString(KEY_NAME, name);
+        editor.putString(KEY_EMAIL, email);
+        editor.commit();
+    }
+
     public void checkLogin(){
         if(!this.isLoggedIn()){
             Intent i = new Intent(_context, Login.class);
