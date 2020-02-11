@@ -8,11 +8,11 @@ import com.shreyaspatil.MaterialDialog.MaterialDialog;
 public class AlertDialogManager {
     private MaterialDialog materialDialog;
     public void showDialog(Activity activity, String title, String message, Boolean status){
-        String file = null;
+        int file ;
         if (status){
-            file="sucess-anim.json";
+            file= R.raw.sucess_anim;
         }else {
-            file="error-anim.json";
+            file= R.raw.sucess_anim;
         }
         materialDialog = new MaterialDialog.Builder(activity)
                 .setTitle(title)

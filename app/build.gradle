@@ -58,12 +58,8 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-firestore:21.4.0'
-    implementation 'com.google.firebase:firebase-functions:19.0.2'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-inappmessaging:19.0.3'
-    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.3'
     implementation 'com.google.firebase:firebase-database:19.2.1'
 
 
@@ -80,7 +76,7 @@ dependencies {
 //    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
 //        transitive = true;
 //    }
-    implementation 'com.pnikosis:materialish-progress:1.7'
-    implementation 'br.com.simplepass:loading-button-android:1.14.0'
+//    implementation 'com.pnikosis:materialish-progress:1.7'
+//    implementation 'br.com.simplepass:loading-button-android:1.14.0'
 
 }

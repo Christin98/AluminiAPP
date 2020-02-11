@@ -1,6 +1,5 @@
 package com.project.major.alumniapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -18,8 +17,6 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -109,9 +106,9 @@ public class SignUp extends AppCompatActivity {
     }
     public void registerButton(View view) {
         if (validation.validate()) {
-            String emailstr = email.toString().trim();
-            String pass = password.toString();
-            String names = name.toString().trim();
+            String emailstr = email.getText().toString().trim();
+            String pass = password.getText().toString();
+            String names = name.getText().toString().trim();
             loadingDialog.showLoading();
 //            TastyToast.makeText(this,"Register Clicked",TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
             auth.createUserWithEmailAndPassword(emailstr,pass).addOnCompleteListener(this, task -> {
@@ -119,26 +116,30 @@ public class SignUp extends AppCompatActivity {
                     loadingDialog.hideLoading();
                     FirebaseUser user = auth.getCurrentUser();
 //                        alertDialogManager.showDialog(SignUp.this,"SUCCESS","User Successfully Created with email"+ user.getEmail()+".Please Verify your Email and login.",true);
-                    materialDialog = new MaterialDialog.Builder(SignUp.this)
-                            .setTitle("SUCCESS")
-                            .setMessage("User Successfully Created with email"+ user.getEmail()+".Please Verify your Email and login.")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", R.drawable.ic_ok, (dialogInterface, which) -> startActivity(new Intent(SignUp.this, Login.class)))
-                            .setAnimation("sucess-anim.json")
-                            .build();
-                    materialDialog.show();
-                    sendEmailVerification(emailstr, names);
+//                    materialDialog = new MaterialDialog.Builder(SignUp.this)
+//                            .setTitle("SUCCESS")
+//                            .setMessage("User Successfully Created with email"+ user.getEmail()+".Please Verify your Email and login.")
+//                            .setCancelable(false)
+//                            .setPositiveButton("OK", R.drawable.ic_ok, (dialogInterface, which) -> startActivity(new Intent(SignUp.this, Login.class)))
+//                            .setAnimation(R.raw.sucess_anim)
+//                            .build();
+//                    materialDialog.show();
+                    TastyToast.makeText(this,"SUCCESS. Please verify your email and login.",TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show();
+                    createDatabase(emailstr, names, user);
+                    sendEmailVerification();
                 }else {
                     loadingDialog.hideLoading();
 //                        alertDialogManager.showDialog(SignUp.this,"ERROR", "Something went wrong. Please check your details and try again.",false);
-                    materialDialog = new MaterialDialog.Builder(SignUp.this)
-                            .setTitle("ERROR")
-                            .setMessage("Something went wrong. Please check your details and try again.")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", R.drawable.ic_ok, (dialogInterface, which) -> dialogInterface.dismiss())
-                            .setAnimation("error-anim.json")
-                            .build();
-                    materialDialog.show();
+//                    materialDialog = new MaterialDialog.Builder(SignUp.this)
+//                            .setTitle("ERROR")
+//                            .setMessage("Something went wrong. Please check your details and try again.")
+//                            .setCancelable(false)
+//                            .setPositiveButton("OK", R.drawable.ic_ok, (dialogInterface, which) -> dialogInterface.dismiss())
+//                            .setAnimation("delete_anim.json")
+//                            .build();
+//                    materialDialog.show();
+                    TastyToast.makeText(this," Error. Please check details."+task.getException().toString(),TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
+
                 }
             });
         }else {
@@ -146,7 +147,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    private void sendEmailVerification(String email, String username) {
+    private void sendEmailVerification() {
         final FirebaseUser user = auth.getCurrentUser();
         assert user != null;
         user.sendEmailVerification().addOnCompleteListener(this, task -> {
@@ -154,7 +155,6 @@ public class SignUp extends AppCompatActivity {
                 Toast.makeText(SignUp.this,
                         "Verification email sent to " + user.getEmail(),
                         Toast.LENGTH_SHORT).show();
-                createDatabase(email, username, user);
             } else {
                 materialDialog.dismiss();
                 Toast.makeText(SignUp.this,
@@ -178,7 +178,6 @@ public class SignUp extends AppCompatActivity {
                 TastyToast.makeText(SignUp.this,"Error creating user database. Please try again.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
             }
         });
-        user.delete();
     }
 
 }

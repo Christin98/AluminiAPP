@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         sessionManager = new SessionManager(getApplicationContext());
-        sessionManager.checkLogin();
+//        sessionManager.checkLogin();
         validation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
         validation.setContext(this);
         loadingDialog = new LoadingDialog(this);
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity {
 
     public void loginButton(View view) {
         if (validation.validate()) {
-            login(email.toString().trim(),password.toString());
+            login(email.getText().toString().trim(),password.getText().toString());
             loadingDialog.showLoading();
         } else {
             TastyToast.makeText(this, "Validation Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
@@ -136,7 +136,7 @@ public class Login extends AppCompatActivity {
                 }
             }else {
                 loadingDialog.hideLoading();
-                alertDialogManager.showDialog(Login.this, "Login failed..", "Please enter username and password", false);
+                TastyToast.makeText(this,"Login Failed. Please check details.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
             }
         });
     }
