@@ -204,12 +204,4 @@
     <string name="passwerror">The password should contain at least 8 characters, including at least one lower case letter, one upper case letter, one number and one special character</string>
     <string name="nameerror">Enter Valid Name. Name should contain at least 3 characters</string>
     <string name="confpasswerror">Password do not match</string>
-    <string name="default_web_client_id" translatable="false">18991910369-mnu8bcbcdir0ap2j19u35f9263vbrdlo.apps.googleusercontent.com</string>
-    <string name="firebase_database_url" translatable="false">https://alumniconnect-a3500.firebaseio.com</string>
-    <string name="gcm_defaultSenderId" translatable="false">18991910369</string>
-    <string name="google_api_key" translatable="false">AIzaSyD7mU4yT4uROlkyYFriuhUeMvfwse3RBb4</string>
-    <string name="google_app_id" translatable="false">1:18991910369:android:5ca5b8641f1f4d5c3716a0</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD7mU4yT4uROlkyYFriuhUeMvfwse3RBb4</string>
-    <string name="google_storage_bucket" translatable="false">alumniconnect-a3500.appspot.com</string>
-    <string name="project_id" translatable="false">alumniconnect-a3500</string>
 </resources>
