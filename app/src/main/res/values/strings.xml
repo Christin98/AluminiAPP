@@ -201,6 +201,7 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="about_us_fragment">About Us Fragment</string>
     <string name="emailerror">Enter Valid Email</string>
+    <string name="register_success_popup">Registered successfully.\nVerification email has been sent.\nPlease verify email.</string>
     <string name="passwerror">The password should contain at least 8 characters, including at least one lower case letter, one upper case letter, one number and one special character</string>
     <string name="nameerror">Enter Valid Name. Name should contain at least 3 characters</string>
     <string name="confpasswerror">Password do not match</string>

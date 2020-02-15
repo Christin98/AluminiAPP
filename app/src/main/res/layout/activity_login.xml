@@ -209,12 +209,21 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:onClick="signUp"
                     android:padding="2dp"
+                    android:textColor="@color/green"
                     android:text="@string/join_us"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/copyrightTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:text=""
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
