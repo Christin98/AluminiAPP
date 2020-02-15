@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".utils.LoadingDialog"></activity>
+        <activity android:name=".activities.PhoneVerificationActivity"></activity>
+        <activity android:name=".utils.LoadingDialog" />
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />

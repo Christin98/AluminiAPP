@@ -7,18 +7,21 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.utils.SessionManager;
 
 public class SplashScreen extends AppCompatActivity {
     Intent intent;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        sessionManager = new SessionManager(getApplicationContext());
 
-        intent = new Intent(this, Login.class);
+        intent = new Intent(this, MainActivity.class);
 
-        new Handler().postDelayed(() -> startActivity(intent), 2000);
+        new Handler().postDelayed(() -> sessionManager.checkLogin(), 2000);
     }
 
     @Override

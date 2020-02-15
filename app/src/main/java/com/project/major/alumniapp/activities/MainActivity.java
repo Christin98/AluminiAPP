@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -24,29 +25,42 @@ import com.project.major.alumniapp.fragment.JobsFragment;
 import com.project.major.alumniapp.fragment.MessageFragment;
 import com.project.major.alumniapp.fragment.NotificationFragment;
 import com.project.major.alumniapp.fragment.ProfileFragment;
+import com.project.major.alumniapp.utils.SessionManager;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
+    SessionManager sessionManager;
+    TextView user_tv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sessionManager = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = sessionManager.getUserDetails();
+        String name = user.get(SessionManager.KEY_NAME);
+
+        user_tv = findViewById(R.id.nav_header_textView);
 
         toolbar = findViewById(R.id.toolbar);
         bottomNavigationView = findViewById(R.id.navigationBottom);
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         drawerLayout = findViewById(R.id.drawer_lay);
         setSupportActionBar(toolbar);
+        drawerToggle = new  ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(drawerToggle);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
-        drawerToggle = new  ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(drawerToggle);
-        setNavDraw();
         getSupportActionBar().setTitle("Feeds");
+        setNavDraw();
+        user_tv.setText(name);
         loadFragment(new FeedsFragment());
         drawerToggle.syncState();
     }
@@ -55,43 +69,40 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_lay);
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_profile){
-                    toolbar.setTitle("Profile");
-                    fragment = new ProfileFragment();
-                    loadFragment(fragment);
-                    drawerLayout.closeDrawers();
-                    return true;
-                }else if (itemId == R.id.nav_messages){
-                    toolbar.setTitle("Message");
-                    fragment = new MessageFragment();
-                    loadFragment(fragment);
-                    drawerLayout.closeDrawers();
-                    return true;
-                }else if (itemId == R.id.nav_about_us){
-                    toolbar.setTitle("About Us");
-                    fragment = new AboutUsFragment();
-                    loadFragment(fragment);
-                    drawerLayout.closeDrawers();
-                    return true;
-                }else if (itemId == R.id.nav_feedback){
-                    toolbar.setTitle("Feedback");
-                    fragment = new FeedbackFragment();
-                    loadFragment(fragment);
-                    drawerLayout.closeDrawers();
-                    return true;
-                }else if (itemId == R.id.nav_logout){
-                    startActivity(new Intent(MainActivity.this, Login.class));
-                    drawerLayout.closeDrawers();
-                    finish();
-                    return true;
-                }
-                return false;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Fragment fragment;
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_profile){
+                toolbar.setTitle("Profile");
+                fragment = new ProfileFragment();
+                loadFragment(fragment);
+                drawerLayout.closeDrawers();
+                return true;
+            }else if (itemId == R.id.nav_messages){
+                toolbar.setTitle("Message");
+                fragment = new MessageFragment();
+                loadFragment(fragment);
+                drawerLayout.closeDrawers();
+                return true;
+            }else if (itemId == R.id.nav_about_us){
+                toolbar.setTitle("About Us");
+                fragment = new AboutUsFragment();
+                loadFragment(fragment);
+                drawerLayout.closeDrawers();
+                return true;
+            }else if (itemId == R.id.nav_feedback){
+                toolbar.setTitle("Feedback");
+                fragment = new FeedbackFragment();
+                loadFragment(fragment);
+                drawerLayout.closeDrawers();
+                return true;
+            }else if (itemId == R.id.nav_logout){
+                startActivity(new Intent(MainActivity.this, Login.class));
+                drawerLayout.closeDrawers();
+                finish();
+                return true;
             }
+            return false;
         });
     }
 
