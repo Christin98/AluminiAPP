@@ -2,9 +2,10 @@ package com.project.major.alumniapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.text.TextUtilsCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chaos.view.PinView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -105,14 +103,12 @@ public class PhoneVerificationActivity extends AppCompatActivity {
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                mAuth.getCurrentUser().linkWithCredential(phoneAuthCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
+                mAuth.getCurrentUser().linkWithCredential(phoneAuthCredential).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        TastyToast.makeText(PhoneVerificationActivity.this, "SUCCESFULLY LINKED", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+                    } else {
+                        TastyToast.makeText(PhoneVerificationActivity.this, " LINKING FAILED", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
 
-                        } else {
-
-                        }
                     }
                 });
             }
@@ -140,29 +136,43 @@ public class PhoneVerificationActivity extends AppCompatActivity {
                 signInWithPhoneAuthCredential(credential);
             }
         });
+
+        button3.setOnClickListener(v -> {
+            if (currentStep < stepView.getStepCount() - 1) {
+                currentStep++;
+                stepView.go(currentStep, true);
+            } else {
+                stepView.done(true);
+            }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(PhoneVerificationActivity.this, MainActivity.class));
+                    finish();
+                }
+            },3000);
+        });
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            if (currentStep < stepView.getStepCount() - 1) {
-                                currentStep++;
-                                stepView.go(currentStep, true);
-                            } else {
-                                stepView.done(true);
-                            }
-                            layout1.setVisibility(View.GONE);
-                            layout2.setVisibility(View.GONE);
-                            layout3.setVisibility(View.VISIBLE);
-                            // ...
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        if (currentStep < stepView.getStepCount() - 1) {
+                            currentStep++;
+                            stepView.go(currentStep, true);
                         } else {
-                            TastyToast.makeText(PhoneVerificationActivity.this,"Something wrong",TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            stepView.done(true);
+                        }
+                        layout1.setVisibility(View.GONE);
+                        layout2.setVisibility(View.GONE);
+                        layout3.setVisibility(View.VISIBLE);
+                        // ...
+                    } else {
+                        TastyToast.makeText(PhoneVerificationActivity.this,"Something wrong",TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
 
-                            }
                         }
                     }
                 });
