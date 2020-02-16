@@ -121,6 +121,7 @@ public class SignUp extends AppCompatActivity {
                     users.put("search_name",user_name.toLowerCase());
                     users.put("e-mail", user_email);
                     users.put("user_image","default_image");
+                    users.put("phone_verified","false");
                     users.put("uid",current_UserID);
                     users.put("createdat", String.valueOf(ServerValue.TIMESTAMP));
                     users.put("user_thumb_image", "default_image");
