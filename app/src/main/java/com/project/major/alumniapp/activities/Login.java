@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -48,9 +49,11 @@ public class Login extends AppCompatActivity {
     LoadingDialog loadingDialog;
     FirebaseAuth auth;
     FirebaseUser user;
+    String phoneVer = "false";
 
     DatabaseReference user_DB;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,9 +119,10 @@ public class Login extends AppCompatActivity {
             if (task.isSuccessful()){
                 String user_ID = auth.getCurrentUser().getUid();
                 user = auth.getCurrentUser();
+                phoneVerified();
                 boolean isVerified = false;
                 if (user != null){
-                    isVerified = user.isEmailVerified();
+                    isVerified = user.isEmailVerified() && (phoneVer.equals("true"));
                 }
                 if (isVerified){
                     Map<String, String> users= new HashMap<>();
@@ -144,7 +148,13 @@ public class Login extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
-                }else {
+                } else if (!phoneVer.equals("true")){
+                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+
+                } else {
                     TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
                     signOut();
                 }
@@ -181,5 +191,23 @@ public class Login extends AppCompatActivity {
     }
     private void signOut(){
         auth.signOut();
+    }
+
+    private void phoneVerified(){
+        String user_ID = user.getUid();
+        user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               if (dataSnapshot.getValue() != null){
+                   HashMap value = (HashMap)dataSnapshot.getValue();
+                   phoneVer = (String) value.get("phone_verified");
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
