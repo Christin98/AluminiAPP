@@ -201,7 +201,17 @@
     <string name="profile_fragment">Profile Fragment</string>
     <string name="about_us_fragment">About Us Fragment</string>
     <string name="emailerror">Enter Valid Email</string>
+    <string name="register_success_popup">Registered successfully.\nVerification email has been sent.\nPlease verify email.</string>
     <string name="passwerror">The password should contain at least 8 characters, including at least one lower case letter, one upper case letter, one number and one special character</string>
     <string name="nameerror">Enter Valid Name. Name should contain at least 3 characters</string>
     <string name="confpasswerror">Password do not match</string>
+    <string name="enter_your_mobile_number">Enter your mobile number</string>
+    <string name="tap_next_to_verify_your_account_with_your_phone_number_you_don_t_need_to_manualy_enter_verification_code_if_the_number_install_in_this_phone">Tap Next to verify your account with your phone number. You don\'t need to manualy enter verification code if the number install in this phone...</string>
+    <string name="next">Next</string>
+    <string name="enter_the_code_that_was_send_to">Enter the code that was send to</string>
+    <string name="_918372890302">+918372890302</string>
+    <string name="cont">Continue</string>
+    <string name="i_didn_t_get_a_code">I didn\'t get a code</string>
+    <string name="tap_continue_to_accept_our_terms_data_policy_cookie_use_and_the_privacy_policy_and_terms_of_service">Tap Continue to accept our Terms,Data Policy, cookie use and the Privacy Policy and Terms of Service...</string>
+    <string name="congratulation_your_number_is_verified_click_continue_to_create_your_profile">Congratulation your number is verified click Continue to create your profile</string>
 </resources>

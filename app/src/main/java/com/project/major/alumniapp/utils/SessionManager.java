@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.project.major.alumniapp.activities.Login;
+import com.project.major.alumniapp.activities.MainActivity;
 
 import java.util.HashMap;
 
@@ -17,23 +18,31 @@ public class SessionManager {
     private static final String IS_LOGIN = "IsLoggedIn";
     public static final String KEY_NAME = "name";
     public static final String KEY_EMAIL = "email";
+    public static final String KEY_UID = "uid";
 
     public SessionManager(Context context) {
         this._context = context;
         preferences = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = preferences.edit();
+        editor.apply();
     }
 
-    public void createLoginSession(String name, String email){
+    public void createLoginSession(String name, String email, String uid){
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_UID, uid);
         editor.commit();
     }
 
     public void checkLogin(){
         if(!this.isLoggedIn()){
             Intent i = new Intent(_context, Login.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            _context.startActivity(i);
+        }else {
+            Intent i = new Intent(_context, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             _context.startActivity(i);
@@ -44,6 +53,7 @@ public class SessionManager {
         HashMap<String, String> user = new HashMap<>();
         user.put(KEY_NAME, preferences.getString(KEY_NAME, null));
         user.put(KEY_EMAIL, preferences.getString(KEY_EMAIL, null));
+        user.put(KEY_UID, preferences.getString(KEY_UID, null));
         return user;
     }
 
