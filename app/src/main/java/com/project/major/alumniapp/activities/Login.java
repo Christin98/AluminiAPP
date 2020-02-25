@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -117,23 +118,24 @@ public class Login extends AppCompatActivity {
     private void login(String email , String passw){
         auth.signInWithEmailAndPassword(email,passw).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()){
+                Log.d("Login","task.success");
+                Map<String, String> users= new HashMap<>();
                 String user_ID = auth.getCurrentUser().getUid();
                 user = auth.getCurrentUser();
                 phoneVerified();
                 boolean isVerified = false;
-                if (user != null){
-                    isVerified = user.isEmailVerified() && (phoneVer.equals("true"));
-                }
-                if (isVerified){
-                    Map<String, String> users= new HashMap<>();
+//                if (user != null){
+//                    isVerified = user.isEmailVerified();
+//                }
+//                if (isVerified) {
                     user_DB.child(user_ID).child("verified").setValue("true");
                     user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds:dataSnapshot.getChildren()){
-                           users.put("name",ds.child("user_name").getValue(String.class));
-                           users.put("email",ds.child("e-mail").getValue(String.class));
-                          }
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                users.put("name", ds.child("user_name").getValue(String.class));
+                                users.put("email", ds.child("e-mail").getValue(String.class));
+                            }
                         }
 
                         @Override
@@ -148,16 +150,35 @@ public class Login extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
-                } else if (!phoneVer.equals("true")){
-                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-
-                } else {
-                    TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
-                    signOut();
                 }
+//                } else if (!phoneVer.equals("true")){
+//                    user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            for (DataSnapshot ds:dataSnapshot.getChildren()){
+//                                users.put("name",ds.child("user_name").getValue(String.class));
+//                                users.put("email",ds.child("e-mail").getValue(String.class));
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    intent.putExtra("email",email);
+//                    intent.putExtra("password",passw);
+//                    intent.putExtra("name",users.get("name"));
+//                    startActivity(intent);
+//                    finish();
+//
+//                }
+//             else    {
+//                    TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+//                    signOut();
+//                }
 //                Map<String, String> users= new HashMap<>();
 //                FirebaseDatabase database = FirebaseDatabase.getInstance();
 //                DatabaseReference ref = database.getReference("alumni-app").getRef().child(user.getUid());
@@ -183,7 +204,7 @@ public class Login extends AppCompatActivity {
 //                    signOut();
 //                    TastyToast.makeText(this, "Login Error.Please Verify your Email First.", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
 //                }
-            }else {
+            else {
                 TastyToast.makeText(this,"Your email and password may be incorrect. Please check & try again.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
             }
             loadingDialog.hideLoading();
@@ -206,7 +227,7 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                TastyToast.makeText(getApplicationContext(), databaseError.getMessage(), TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
             }
         });
     }

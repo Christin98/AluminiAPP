@@ -214,4 +214,6 @@
     <string name="i_didn_t_get_a_code">I didn\'t get a code</string>
     <string name="tap_continue_to_accept_our_terms_data_policy_cookie_use_and_the_privacy_policy_and_terms_of_service">Tap Continue to accept our Terms,Data Policy, cookie use and the Privacy Policy and Terms of Service...</string>
     <string name="congratulation_your_number_is_verified_click_continue_to_create_your_profile">Congratulation your number is verified click Continue to create your profile</string>
+    <string name="add_event">ADD EVENT</string>
+    <string name="no_posts_create_your_own_now">No posts? create your own now.</string>
 </resources>

@@ -14,13 +14,19 @@
         android:orientation="vertical" >
 
     <include
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <!-- The main content that loads the fragments -->
     <FrameLayout
         android:id="@+id/fragment_layout"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </LinearLayout>
     <!-- Setting the corodinator layout inorder to pull the bottom
          navigation view down to the bottom-->
@@ -33,8 +39,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            app:layout_anchorGravity="center"
             android:background="?android:attr/windowBackground"
-            app:menu="@menu/navigation_bottom"/>
+            app:menu="@menu/navigation_bottom"
+        />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

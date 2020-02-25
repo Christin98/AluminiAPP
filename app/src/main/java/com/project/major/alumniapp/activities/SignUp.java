@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -46,7 +48,7 @@ public class SignUp extends AppCompatActivity {
     FirebaseAuth auth;
     DatabaseReference user_DB;
     FirebaseUser fUser;
-
+    private String TAG = "SignUp";
 
 
     @Override
@@ -129,6 +131,15 @@ public class SignUp extends AppCompatActivity {
                         fUser = auth.getCurrentUser();
                         if (fUser != null){
                             fUser.sendEmailVerification().addOnCompleteListener(task11 -> {
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(user_name)
+                                        .build();
+                                fUser.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(task2 -> {
+                                            if (task2.isSuccessful()) {
+                                                Log.d(TAG, "User profile updated.");
+                                            }
+                                        });
                                 if (task11.isSuccessful()) {
                                             registerSuccessPopUp();
                                     new Timer().schedule(new TimerTask() {

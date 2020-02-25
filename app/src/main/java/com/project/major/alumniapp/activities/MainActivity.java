@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +26,7 @@ import com.project.major.alumniapp.fragment.JobsFragment;
 import com.project.major.alumniapp.fragment.MessageFragment;
 import com.project.major.alumniapp.fragment.NotificationFragment;
 import com.project.major.alumniapp.fragment.ProfileFragment;
+import com.project.major.alumniapp.utils.BottomLayoutBehaviour;
 import com.project.major.alumniapp.utils.SessionManager;
 
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
     SessionManager sessionManager;
-    TextView user_tv;
+//    TextView user_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> user = sessionManager.getUserDetails();
         String name = user.get(SessionManager.KEY_NAME);
 
-        user_tv = findViewById(R.id.nav_header_textView);
+//        user_tv = findViewById(R.id.nav_header_textView);
 
         toolbar = findViewById(R.id.toolbar);
         bottomNavigationView = findViewById(R.id.navigationBottom);
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
+        layoutParams.setBehavior(new BottomLayoutBehaviour());
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         drawerLayout = findViewById(R.id.drawer_lay);
         setSupportActionBar(toolbar);
@@ -60,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Feeds");
         setNavDraw();
-        user_tv.setText(name);
         loadFragment(new FeedsFragment());
         drawerToggle.syncState();
+//        user_tv.setText(name);
     }
 
     private void setNavDraw() {
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         // load fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_layout, fragment);
-        transaction.addToBackStack(null);
+//        transaction.addToBackStack();
         transaction.commit();
     }
 }
