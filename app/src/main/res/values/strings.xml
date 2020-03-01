@@ -216,4 +216,8 @@
     <string name="congratulation_your_number_is_verified_click_continue_to_create_your_profile">Congratulation your number is verified click Continue to create your profile</string>
     <string name="add_event">ADD EVENT</string>
     <string name="no_posts_create_your_own_now">No posts? create your own now.</string>
+    <string name="comments">Comments</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="post_comment">Post Comment</string>
+    <string name="add_feed">ADD FEED</string>
 </resources>

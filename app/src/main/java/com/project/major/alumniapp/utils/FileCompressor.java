@@ -10,7 +10,7 @@ import id.zelory.compressor.Compressor;
 public class FileCompressor {
     private Context context;
 
-    FileCompressor(Context context){
+    public FileCompressor(Context context){
         this.context = context;
     }
 

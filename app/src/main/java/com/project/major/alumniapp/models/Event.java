@@ -9,7 +9,7 @@ public class Event {
     public  String url;
 
     public Event() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
 
     public String getId() {
@@ -60,10 +60,12 @@ public class Event {
         this.url = url;
     }
 
-    public Event(String id, String desc, String email, String url) {
+    public Event(String id, String event_name, String desc, String loc, String email, String url) {
         this.id = id;
+        this.ev_name = event_name;
         this.desc = desc;
-        this.email=email;
-        this.url=url;
+        this.email = email;
+        this.loc = loc;
+        this.url = url;
     }
 }

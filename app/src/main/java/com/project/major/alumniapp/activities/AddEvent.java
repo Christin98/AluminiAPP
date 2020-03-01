@@ -1,4 +1,10 @@
-package com.project.major.alumniapp.utils;
+/******************************************************************************
+ * Copyright (c) 2020.                                                        *
+ * Christin B Koshy.                                                          *
+ * 1                                                                          *
+ ******************************************************************************/
+
+package com.project.major.alumniapp.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -34,16 +40,18 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.UploadEvent;
+import com.project.major.alumniapp.utils.FileCompressor;
+import com.project.major.alumniapp.utils.SquareImageView;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.Locale;
 
 
 public class AddEvent extends AppCompatActivity {
@@ -56,16 +64,15 @@ public class AddEvent extends AppCompatActivity {
 //    };
     private DatabaseReference mDatabase;
     StorageReference eventrefrance;
-    Uri uri;
     EditText event_name, desc, loc;
     Button uploadEvent;
-    CircleImageView profile_image;
+    SquareImageView profile_image;
     String imgPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_child_event);
+        setContentView(R.layout.activity_add_event);
 
         requestMultiplePermissions();
 
@@ -208,6 +215,7 @@ public class AddEvent extends AppCompatActivity {
         Log.d("Alumni app",path);
         StorageReference storageReference;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String user_id = user.getUid();
         final String email = user.getEmail();
         final String eventName = event_name.getText().toString();
         final String description = desc.getText().toString();
@@ -218,16 +226,17 @@ public class AddEvent extends AppCompatActivity {
         progressDialog.setCancelable(true);
         progressDialog.setMessage("Uploading....");
         progressDialog.show();
+        String date_added = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS", Locale.ENGLISH).format(Calendar.getInstance().getTime());
         UploadTask uploadTask;
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
-        storageReference = eventrefrance.child("alumniapp_"+id);
-        uploadTask = storageReference.putFile(Uri.fromFile(compressor.compressImage(path)));
+        storageReference = eventrefrance.child("alumniapp"+id);
+        uploadTask = storageReference.putFile(Uri.fromFile(compressor.compressImage(path)),metadata);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
               String  url = uri1.toString();
-              UploadEvent uploadEvent = new UploadEvent(id, eventName, description, location, email, url);
+              UploadEvent uploadEvent = new UploadEvent("alumniapp"+id, eventName, description, location, email, date_added,user_id ,url);
                 mDatabase.child("Events").child(id).setValue(uploadEvent).addOnSuccessListener(aVoid -> {
                     progressDialog.dismiss();
                     TastyToast.makeText(getApplicationContext(), "Post Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
@@ -245,6 +254,7 @@ public class AddEvent extends AppCompatActivity {
 
     public void upload(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String user_id = user.getUid();
         final String email = user.getEmail();
         final String eventName = event_name.getText().toString();
         final String description = desc.getText().toString();
@@ -254,8 +264,9 @@ public class AddEvent extends AppCompatActivity {
         progressDialog.setCancelable(true);
         progressDialog.setMessage("Adding Event ....");
         progressDialog.show();
+        String date_added = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS", Locale.ENGLISH).format(Calendar.getInstance().getTime());
 
-        final UploadEvent uploadPost = new UploadEvent(id, eventName, description, location, email);
+        final UploadEvent uploadPost = new UploadEvent(id, eventName, description, location, email, date_added, user_id);
         mDatabase.child("Events").child(id).setValue(uploadPost).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
             TastyToast.makeText(this, "Event Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();

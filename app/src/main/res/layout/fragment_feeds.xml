@@ -2,13 +2,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.project.major.alumniapp.fragment.FeedsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <Button
+        android:id="@+id/addFeed"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/add_feed"
+        android:background="@android:color/white"
+        android:drawableStart="@drawable/ic_plus"
+        android:textSize="18sp"/>
+
     <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:text="@string/no_posts_create_your_own_now"
+        android:textSize="25sp"
+        android:fontFamily="@font/montserrat_light" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feed_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/feeds_fragment" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="?actionBarSize"/>
+
 
 </FrameLayout>
