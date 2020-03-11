@@ -32,8 +32,7 @@ import com.google.firebase.database.Query;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.activities.AddFeeds;
 import com.project.major.alumniapp.models.Feeds;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2020.
+  ~ Christin B Koshy.
+  ~ 10
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+
+        <shape
+            android:shape="rectangle">
+
+            <size
+                android:width="150dp"
+                android:height="150dp"/>
+
+            <solid
+                android:color="#00FFFFFF"/>
+        </shape>
+    </item>
+
+    <item android:gravity="center">
+        <animated-rotate
+            android:drawable="@drawable/progress_image"
+            android:pivotX="50%"
+            android:pivotY="50%" />
+    </item>
+</layer-list>

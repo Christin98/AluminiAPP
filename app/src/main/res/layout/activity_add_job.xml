@@ -5,13 +5,125 @@
   ~ 1
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.AddJob">
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.project.major.alumniapp.utils.SquareImageView
+            android:layout_margin="10dp"
+            android:id="@+id/company_logo"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/ic_add_black_24dp"
+            app:civ_border_width="5dp"
+            app:civ_border_color="#000000"/>
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <EditText
+            style="@style/RegularMono"
+            android:layout_gravity="center"
+            android:id="@+id/companyname_et"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:hint="Comapny Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <EditText
+            style="@style/RegularMono"
+            android:layout_gravity="center"
+            android:id="@+id/jobprofile_et"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:hint="Job Profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <EditText
+            style="@style/RegularMono"
+            android:layout_gravity="center"
+            android:id="@+id/job_description_et"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:hint="Job Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <EditText
+            style="@style/RegularMono"
+            android:layout_gravity="center"
+            android:id="@+id/last_date_et"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:hint="Last Date To Apply"
+            android:clickable="true"
+            android:inputType="date"
+            android:focusable="false"
+            android:longClickable="false"
+            android:cursorVisible="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <Spinner
+            android:id="@+id/exp_spinner"
+            style="@style/RegularMono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/exp"
+            />
 
-
+        <View
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <EditText
+            style="@style/RegularMono"
+            android:layout_gravity="center"
+            android:id="@+id/job_location_et"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:hint="Job Location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            style="@style/BoldCondensed"
+            android:textSize="20sp"
+            android:background="@drawable/roundedbutton"
+            android:textColor="@android:color/white"
+            android:layout_margin="10dp"
+            android:id="@+id/uploadJob"
+            android:text="ADD JOB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

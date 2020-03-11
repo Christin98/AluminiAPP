@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,8 +34,6 @@ import com.project.major.alumniapp.activities.CommentsActivity;
 import com.project.major.alumniapp.models.Event;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.activities.AddEvent;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -132,18 +133,20 @@ public class EventFragment extends Fragment {
                 setUserLikes(holder.heartOutline,holder.heartRed,post_key,holder.likedBy);
                 launchComment(post_key, holder);
                 if (event.geturl() != null) {
-//            Glide.with(context)
-//                    .load(data.geturl())
-//                    .apply(new RequestOptions()
-//                    .placeholder(R.drawable.postimg))
-//                    .into(myHolder.postimg);
-                    Picasso.get()
-                            .load(event.geturl())
-                            .networkPolicy(NetworkPolicy.OFFLINE)
-                            .resize(300, 300)
-                            .placeholder(R.drawable.postimg)
-                            .error(R.drawable.postimg)
-                            .into(holder.postimg);
+            Glide.with(getContext())
+                    .load(event.geturl())
+                    .apply(new RequestOptions().override(300,300)
+                    .placeholder(R.drawable.postimg)
+                    .error(R.drawable.error_img)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                    .into(holder.postimg);
+//                    Picasso.get()
+//                            .load(event.geturl())
+//                            .networkPolicy(NetworkPolicy.OFFLINE)
+//                            .resize(300, 300)
+//                            .placeholder(R.drawable.postimg)
+//                            .error(R.drawable.postimg)
+//                            .into(holder.postimg);
                     holder.postimg.setVisibility(View.VISIBLE);
                     holder.progressBar.setVisibility(View.GONE);
                 } else {

@@ -1,5 +1,6 @@
 package com.project.major.alumniapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -26,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -116,51 +120,46 @@ public class SignUp extends AppCompatActivity {
             auth.createUserWithEmailAndPassword(user_email,passw).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()){
                     String current_UserID = auth.getCurrentUser().getUid();
-                    user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").getRef().child("users").child(current_UserID);
-                    Map<String, String> users = new HashMap<>();
-                    users.put("user_name", user_name);
-                    users.put("verified","false");
-                    users.put("search_name",user_name.toLowerCase());
-                    users.put("e-mail", user_email);
-                    users.put("user_image","default_image");
-                    users.put("phone_verified","false");
-                    users.put("uid",current_UserID);
-                    users.put("createdat", String.valueOf(ServerValue.TIMESTAMP));
-                    users.put("user_thumb_image", "default_image");
-                    user_DB.setValue(users).addOnCompleteListener(task1 -> {
+                    user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").child(current_UserID);
+//                    Map<String, String> users = new HashMap<>();
+//                    users.put("user_name", user_name);
+//                    users.put("verified","false");
+//                    users.put("search_name",user_name.toLowerCase());
+//                    users.put("e-mail", user_email);
+//                    users.put("user_image","default_image");
+//                    users.put("phone_verified","false");
+//                    users.put("uid",current_UserID);
+//                    users.put("createdat", String.valueOf(ServerValue.TIMESTAMP));
+//                    users.put("user_thumb_image", "default_image");
+                    User user = new User(String.valueOf(System.currentTimeMillis()), "super_admin",current_UserID, "false", "default_image", user_name, "default_image", "false", user_email, "default", "India", "default", "default", "default","default", "1990-94", "default", "default", user_name.toLowerCase());
+                    user_DB.setValue(user).addOnCompleteListener(task1 -> {
                         fUser = auth.getCurrentUser();
                         if (fUser != null){
-                            fUser.sendEmailVerification().addOnCompleteListener(task11 -> {
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(user_name)
-                                        .build();
-                                fUser.updateProfile(profileUpdates)
-                                        .addOnCompleteListener(task2 -> {
-                                            if (task2.isSuccessful()) {
-                                                Log.d(TAG, "User profile updated.");
-                                            }
-                                        });
+                            loadingDialog.showLoading();
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(user_name)
+                                    .build();
+                            fUser.updateProfile(profileChangeRequest).addOnCompleteListener(task2 -> fUser.sendEmailVerification().addOnCompleteListener(task11 -> {
                                 if (task11.isSuccessful()) {
-                                            registerSuccessPopUp();
+                                    registerSuccessPopUp();
                                     new Timer().schedule(new TimerTask() {
                                         @Override
                                         public void run() {
                                             SignUp.this.runOnUiThread(() -> {
                                                 auth.signOut();
-
+                                                loadingDialog.hideLoading();
                                                 Intent login = new Intent(SignUp.this, Login.class);
                                                 login.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(login);
                                                 finish();
-
                                                 TastyToast.makeText(SignUp.this,"Please check your email and verify and login",TastyToast.LENGTH_LONG, TastyToast.INFO).show();
                                             });
                                         }
-                                    },8000);
+                                    },4000);
                                 }else {
                                     auth.signOut();
                                 }
-                            });
+                        }));
                         }
                     });
 //                    loadingDialog.hideLoading();

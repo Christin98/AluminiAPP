@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.utils.ConnectionService;
 import com.project.major.alumniapp.utils.SessionManager;
 
 public class SplashScreen extends AppCompatActivity {
@@ -19,8 +20,8 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         sessionManager = new SessionManager(getApplicationContext());
 
-        intent = new Intent(this, MainActivity.class);
-
+        intent = new Intent(this, ConnectionService.class);
+        startService(intent);
         new Handler().postDelayed(() -> sessionManager.checkLogin(), 2000);
     }
 
@@ -29,4 +30,5 @@ public class SplashScreen extends AppCompatActivity {
         super.onPause();
         finish();
     }
+
 }

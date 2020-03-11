@@ -8,11 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Html;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.project.major.alumniapp.R;
-import com.project.major.alumniapp.activities.AddFeeds;
 import com.project.major.alumniapp.activities.AddJob;
-import com.project.major.alumniapp.models.Feeds;
 import com.project.major.alumniapp.models.Jobs;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class JobsFragment extends Fragment {
 
@@ -76,9 +68,7 @@ public class JobsFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("alumni_app").child("Jobs");
         databaseReference.keepSynced(true);
 
-        addEvent.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), AddJob.class));
-        });
+        addEvent.setOnClickListener(v -> startActivity(new Intent(getContext(), AddJob.class)));
 
         return view;
     }
@@ -94,7 +84,7 @@ public class JobsFragment extends Fragment {
             @Override
             public JobsFragment.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.feed_item, parent, false);
+                        .inflate(R.layout.job_item, parent, false);
 
                 return new JobsFragment.ViewHolder(view);
             }
@@ -102,6 +92,15 @@ public class JobsFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull JobsFragment.ViewHolder holder, int position, @NonNull Jobs jobs) {
                 String post_key = getRef(position).getKey();
+                if (jobs.getCompanyImage() != null) {
+                    Glide.with(getContext())
+                            .load(jobs.getCompanyImage())
+                            .apply(new RequestOptions().override(100, 100).placeholder(R.drawable.postimg).diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(R.drawable.error_img))
+                            .into(holder.companyImage);
+                    holder.companyImage.setVisibility(View.VISIBLE);
+                } else {
+                    holder.companyImage.setVisibility(View.GONE);
+                }
                 holder.companyName.setText(jobs.getCompanyName());
                 holder.jobProfile.setText(jobs.getJobProfile());
                 holder.lastDate.setText(jobs.getLastDate());

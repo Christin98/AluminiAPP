@@ -27,6 +27,11 @@
         <item>EE</item>
         <item>EIC</item>
     </string-array>
+
+    <string-array name="navodhya_array">
+        <item></item>
+    </string-array>
+
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
 
@@ -220,4 +225,12 @@
     <string name="add_comment">Add Comment</string>
     <string name="post_comment">Post Comment</string>
     <string name="add_feed">ADD FEED</string>
+    <string name="exp">Select Experience</string>
+    <string name="no_users">No Users</string>
+    <string name="select_state">Select a State</string>
+    <string name="select_city">Select a City</string>
+    <string name="select_batch">Select a Batch</string>
+    <string name="select_navodhya">Select Navodhya School</string>
+    <string name="users">Users</string>
+
 </resources>

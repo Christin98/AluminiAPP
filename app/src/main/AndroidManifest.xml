@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="false"
@@ -27,8 +28,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:targetApi="p">
-        <activity android:name=".activities.AddJob"></activity>
+        tools:targetApi="p"
+        tools:replace="android:allowBackup">
+        <activity android:name=".activities.EditProfileActivity"/>
+        <activity android:name=".activities.ProfileActivity" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".activities.AddJob" />
         <activity android:name=".activities.AddFeeds" />
         <activity android:name=".activities.CommentsActivity" />
         <activity android:name=".activities.PhoneVerificationActivity" />
@@ -52,6 +61,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.AddEvent" />
+
+        <service android:name=".utils.ConnectionService" />
     </application>
 
 </manifest>

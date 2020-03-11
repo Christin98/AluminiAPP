@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
 import com.project.major.alumniapp.utils.SessionManager;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -50,6 +51,7 @@ public class Login extends AppCompatActivity {
     LoadingDialog loadingDialog;
     FirebaseAuth auth;
     FirebaseUser user;
+    User userList;
     String phoneVer = "false";
 
     DatabaseReference user_DB;
@@ -66,7 +68,7 @@ public class Login extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").getRef().child("users");
+        user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").child("users");
 
         top_curve = findViewById(R.id.top_curve);
         email = findViewById(R.id.editText_login_email);
@@ -117,24 +119,24 @@ public class Login extends AppCompatActivity {
 
     private void login(String email , String passw){
         auth.signInWithEmailAndPassword(email,passw).addOnCompleteListener(this, task -> {
-            if (task.isSuccessful()){
-                Log.d("Login","task.success");
-                Map<String, String> users= new HashMap<>();
+            if (task.isSuccessful()) {
+                Log.d("Login", "task.success");
+                Map<String, String> users = new HashMap<>();
                 String user_ID = auth.getCurrentUser().getUid();
                 user = auth.getCurrentUser();
                 phoneVerified();
                 boolean isVerified = false;
-//                if (user != null){
-//                    isVerified = user.isEmailVerified();
-//                }
-//                if (isVerified) {
+                if (user != null) {
+                    isVerified = user.isEmailVerified() && phoneVer.equals("true");
+                }
+                if (isVerified) {
                     user_DB.child(user_ID).child("verified").setValue("true");
                     user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 users.put("name", ds.child("user_name").getValue(String.class));
-                                users.put("email", ds.child("e-mail").getValue(String.class));
+                                users.put("email", ds.child("email").getValue(String.class));
                             }
                         }
 
@@ -150,65 +152,64 @@ public class Login extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
+                } else if (!phoneVer.equals("true")) {
+                    user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                users.put("name", ds.child("user_name").getValue(String.class));
+                                users.put("email", ds.child("email").getValue(String.class));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", passw);
+                    intent.putExtra("name", users.get("name"));
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+                    signOut();
                 }
-//                } else if (!phoneVer.equals("true")){
-//                    user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            for (DataSnapshot ds:dataSnapshot.getChildren()){
-//                                users.put("name",ds.child("user_name").getValue(String.class));
-//                                users.put("email",ds.child("e-mail").getValue(String.class));
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    intent.putExtra("email",email);
-//                    intent.putExtra("password",passw);
-//                    intent.putExtra("name",users.get("name"));
-//                    startActivity(intent);
-//                    finish();
-//
-//                }
-//             else    {
-//                    TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
-//                    signOut();
-//                }
-//                Map<String, String> users= new HashMap<>();
-//                FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                DatabaseReference ref = database.getReference("alumni-app").getRef().child(user.getUid());
-//                ref.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                       for (DataSnapshot ds:dataSnapshot.getChildren()){
-//                           users.put("name",ds.child("name").getValue(String.class));
-//                       }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//                if (user.isEmailVerified()){
-//                    TastyToast.makeText(this, "Logged IN Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
-//                    sessionManager.createLoginSession(users.get("name"),email);
-//                    startActivity(new Intent(this, MainActivity.class));
-//                    finish();
-//                }else {
-//                    signOut();
-//                    TastyToast.makeText(this, "Login Error.Please Verify your Email First.", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
-//                }
-            else {
-                TastyToast.makeText(this,"Your email and password may be incorrect. Please check & try again.",TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
+                Map<String, String> usermap = new HashMap<>();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference ref = database.getReference("alumni-app").child("users").child(user.getUid());
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            usermap.put("name", ds.child("name").getValue(String.class));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                if (user.isEmailVerified()) {
+                    TastyToast.makeText(this, "Logged IN Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+                    sessionManager.createLoginSession(usermap.get("name"), email, user_ID);
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                } else {
+                    signOut();
+                    TastyToast.makeText(this, "Login Error.Please Verify your Email First.", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+                }
+            } else{
+                    TastyToast.makeText(this, "Your email and password may be incorrect. Please check & try again.", TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
+                }
+                loadingDialog.hideLoading();
             }
-            loadingDialog.hideLoading();
-        });
+        );
     }
     private void signOut(){
         auth.signOut();
@@ -219,9 +220,12 @@ public class Login extends AppCompatActivity {
         user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                if (dataSnapshot.getValue() != null){
-                   HashMap value = (HashMap)dataSnapshot.getValue();
-                   phoneVer = (String) value.get("phone_verified");
+                   User user = dataSnapshot.getValue(User.class);
+                   phoneVer = user.getPhone_verified();
+               } else {
+                   TastyToast.makeText(Login.this, "No Database Found", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
                }
             }
 
@@ -231,4 +235,5 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
 }
