@@ -43,7 +43,7 @@ public class SignUp extends AppCompatActivity {
     ImageView top_curve;
     EditText name, email, password, confPassword;
     TextView login_title;
-    TextView logo;
+    ImageView logo;
     LinearLayout already_have_account_layout;
     CardView register_card;
     AwesomeValidation validation;
@@ -131,7 +131,7 @@ public class SignUp extends AppCompatActivity {
 //                    users.put("uid",current_UserID);
 //                    users.put("createdat", String.valueOf(ServerValue.TIMESTAMP));
 //                    users.put("user_thumb_image", "default_image");
-                    User user = new User(String.valueOf(System.currentTimeMillis()), "super_admin",current_UserID, "false", "default_image", user_name, "default_image", "false", user_email, "default", "India", "default", "default", "default","default", "1990-94", "default", "default", user_name.toLowerCase());
+                    User user = new User(String.valueOf(System.currentTimeMillis()), current_UserID,"user", "false", "default_image", user_name, "default_image", "false", user_email, "default", "India", "default", "default", "default","default", "1990-94", "default", "default", user_name.toLowerCase());
                     user_DB.setValue(user).addOnCompleteListener(task1 -> {
                         fUser = auth.getCurrentUser();
                         if (fUser != null){

@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.CountDownTimer;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import com.chaos.view.PinView;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.utils.SessionManager;
 import com.sdsmdg.tastytoast.TastyToast;
-import com.shuhart.stepview.StepView;
+//import com.shuhart.stepview.StepView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +35,7 @@ public class PhoneVerificationActivity extends AppCompatActivity {
 
     private int currentStep = 0;
     LinearLayout layout1,layout2,layout3;
-    StepView stepView;
+//    StepView stepView;
 
     private static String uniqueIdentifier = null;
     private static final String UNIQUE_ID = "UNIQUE_ID";
@@ -50,14 +54,16 @@ public class PhoneVerificationActivity extends AppCompatActivity {
     private EditText phoneNum;
     private PinView verifyCodeET;
     private TextView phonenumberText;
+    private TextView resend;
+    private TextView timer, tap;
 
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
     private FirebaseAuth mAuth;
-
+    FirebaseUser user;
     private SessionManager sessionManager;
-
+int counter;
     DatabaseReference user_DB;
 
     String email, passw, name;
@@ -66,10 +72,9 @@ public class PhoneVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_verification);
-
         sessionManager = new SessionManager(getApplicationContext());
-
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         layout1 = findViewById(R.id.layout1);
         layout2 = findViewById(R.id.layout2);
@@ -81,10 +86,9 @@ public class PhoneVerificationActivity extends AppCompatActivity {
         phoneNum = findViewById(R.id.phonenumber);
         verifyCodeET = findViewById(R.id.pinView);
         phonenumberText = findViewById(R.id.phonenumberText);
-
-        stepView = findViewById(R.id.step_view);
-        stepView.setStepsNumber(3);
-        stepView.go(0, true);
+        resend = findViewById(R.id.resend);
+        timer = findViewById(R.id.timer);
+        tap = findViewById(R.id.tap);
         layout1.setVisibility(View.VISIBLE);
 
         email = getIntent().getStringExtra("email");
@@ -94,7 +98,7 @@ public class PhoneVerificationActivity extends AppCompatActivity {
         sendCodeButton.setOnClickListener(v -> {
             phoneNumber = phoneNum.getText().toString();
             phonenumberText.setText(phoneNumber);
-
+            resend.setVisibility(View.GONE);
             if (TextUtils.isEmpty(phoneNumber)) {
                 phoneNum.setError("Enter a Phone Number");
                 phoneNum.requestFocus();
@@ -102,34 +106,74 @@ public class PhoneVerificationActivity extends AppCompatActivity {
                 phoneNum.setError("Please enter a valid phone number");
                 phoneNum.requestFocus();
             } else {
-                if (currentStep < stepView.getStepCount() - 1){
-                    currentStep++;
-                    stepView.go(currentStep, true);
-                } else {
-                    stepView.done(true);
-                }
                 layout1.setVisibility(View.GONE);
                 layout2.setVisibility(View.VISIBLE);
+                verifyCodeET.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (count >= 6){
+                            verifyCodeButton.setEnabled(true);
+                            tap.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
                 PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, PhoneVerificationActivity.this, mCallbacks);
+                new CountDownTimer(60000,1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        timer.setText(String.valueOf(millisUntilFinished/1000));
+                        counter++;
+                    }
+                    @Override
+                    public void onFinish() {
+                        resend.setVisibility(View.VISIBLE);
+                        timer.setVisibility(View.GONE);
+                    }
+                }.start();
             }
+        });
+
+        resend.setOnClickListener(v -> {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, PhoneVerificationActivity.this, mCallbacks, mResendToken);
+            timer.setVisibility(View.VISIBLE);
+            new CountDownTimer(60000,1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    timer.setText(String.valueOf(millisUntilFinished/1000));
+                    counter++;
+                }
+                @Override
+                public void onFinish() {
+                    resend.setVisibility(View.VISIBLE);
+                    timer.setVisibility(View.GONE);
+                }
+            }.start();
         });
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                mAuth.getCurrentUser().linkWithCredential(phoneAuthCredential).addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()){
-                        TastyToast.makeText(PhoneVerificationActivity.this, "SUCCESFULLY LINKED", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
-                    } else {
-                        TastyToast.makeText(PhoneVerificationActivity.this, task1.getException().getMessage(), TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
-                        mAuth.signOut();
-                        sessionManager.logoutUser();
-                    }
+                user.updatePhoneNumber(phoneAuthCredential).addOnCompleteListener(task -> {
+                    layout1.setVisibility(View.GONE);
+                    layout2.setVisibility(View.GONE);
+                    layout3.setVisibility(View.VISIBLE);
+                    TastyToast.makeText(PhoneVerificationActivity.this, "SUCCESFULLY LINKED", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
                 });
             }
 
             @Override
-            public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
+            public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+
                 mVerificationId = verificationId;
                 mResendToken = token;
             }
@@ -141,81 +185,45 @@ public class PhoneVerificationActivity extends AppCompatActivity {
         };
 
         verifyCodeButton.setOnClickListener(v -> {
-
             String verificationCode = verifyCodeET.getText().toString();
             if (verificationCode.isEmpty()){
                 TastyToast.makeText(PhoneVerificationActivity.this, "Enter verification code", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
             } else {
-
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
-                mAuth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()){
-                        if (currentStep < stepView.getStepCount() - 1) {
-                            currentStep++;
-                            stepView.go(currentStep, true);
-                        } else {
-                            stepView.done(true);
-                        }
-
-
-                        layout1.setVisibility(View.GONE);
-                        layout2.setVisibility(View.GONE);
-                        layout3.setVisibility(View.VISIBLE);
-                        TastyToast.makeText(PhoneVerificationActivity.this, "SUCCESFULLY LINKED", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
-                    } else {
-                        TastyToast.makeText(PhoneVerificationActivity.this, task1.getException().getMessage(), TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
-
-                    }
+                user.updatePhoneNumber(credential).addOnCompleteListener(task -> {
+                    layout1.setVisibility(View.GONE);
+                    layout2.setVisibility(View.GONE);
+                    layout3.setVisibility(View.VISIBLE);
+                    TastyToast.makeText(PhoneVerificationActivity.this, "SUCCESFULLY LINKED", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
                 });
             }
         });
 
         button3.setOnClickListener(v -> {
-            if (currentStep < stepView.getStepCount() - 1) {
-                currentStep++;
-                stepView.go(currentStep, true);
-            } else {
-                stepView.done(true);
-            }
-            String user_ID = mAuth.getCurrentUser().getUid();
-            user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").getRef().child("users").child(user_ID);
-            user_DB.child(user_ID).child("verified").setValue("true");
-            user_DB.child(user_ID).child("phone_verified").setValue("true");
-            user_DB.child(user_ID).child("phone").setValue(phoneNum);
-            user_DB.child(user_ID).child("verification_ID").setValue(mVerificationId);
-
+            String user_ID = user.getUid();
+            user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").child(user_ID);
+            user_DB.child("verified").setValue("true");
+            user_DB.child("phone_verified").setValue("true");
+            user_DB.child("phone").setValue(user.getPhoneNumber());
+            user_DB.child("verification_ID").setValue(mVerificationId);
+            Intent intent = new Intent(PhoneVerificationActivity.this, EditProfileActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             sessionManager.createLoginSession(name, email, user_ID);
-
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                startActivity(new Intent(PhoneVerificationActivity.this, MainActivity.class));
-                finish();
-            },3000);
         });
     }
 
-//    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, task -> {
-//                    if (task.isSuccessful()) {
-//                        if (currentStep < stepView.getStepCount() - 1) {
-//                            currentStep++;
-//                            stepView.go(currentStep, true);
-//                        } else {
-//                            stepView.done(true);
-//                        }
-//
-//
-//                        layout1.setVisibility(View.GONE);
-//                        layout2.setVisibility(View.GONE);
-//                        layout3.setVisibility(View.VISIBLE);
-//                        // ...
-//                    } else {
-//                        TastyToast.makeText(PhoneVerificationActivity.this,"Something wrong",TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
-//                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-//
-//                        }
-//                    }
-//                });
-//    }
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser currentUser = task.getResult().getUser();
+                    } else {
+                        TastyToast.makeText(PhoneVerificationActivity.this,"Something wrong",TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            TastyToast.makeText(PhoneVerificationActivity.this,"Something wrong",TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
+                        }
+                    }
+                });
+    }
 }

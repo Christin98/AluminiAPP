@@ -1,15 +1,38 @@
 package com.project.major.alumniapp.models;
 
 public class Event {
-    public String id;
-    public String ev_name;
-    public String desc;
-    public String loc;
-    public String email;
-    public  String url;
+
+    private String id;
+    private String event_name;
+    private String event_description;
+    private String event_location;
+    private String event_time;
+    private String event_date;
+    private String imageurl;
+    private String tags;
+    private String user_id;
+    private String user_name;
+    private String date_added;
+    private String profileImg;
+
 
     public Event() {
-        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+    public Event(String id, String event_name, String event_description, String event_location, String event_time, String event_date, String imageurl, String tags, String user_id, String user_name, String date_added, String profileImg) {
+        this.id = id;
+        this.event_name = event_name;
+        this.event_description = event_description;
+        this.event_location = event_location;
+        this.event_time = event_time;
+        this.event_date = event_date;
+        this.imageurl = imageurl;
+        this.tags = tags;
+        this.user_id = user_id;
+        this.user_name = user_name;
+        this.date_added = date_added;
+        this.profileImg = profileImg;
     }
 
     public String getId() {
@@ -20,52 +43,92 @@ public class Event {
         this.id = id;
     }
 
-    public String getEv_name(){
-        return ev_name;
+    public String getEvent_name() {
+        return event_name;
     }
 
-    public void setEv_name(String ev_name){
-        this.ev_name = ev_name;
+    public void setEvent_name(String event_name) {
+        this.event_name = event_name;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getEvent_description() {
+        return event_description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setEvent_description(String event_description) {
+        this.event_description = event_description;
     }
 
-    public String getLoc(){
-        return loc;
+    public String getEvent_location() {
+        return event_location;
     }
 
-    public void setLoc(String loc) {
-        this.loc = loc;
+    public void setEvent_location(String event_location) {
+        this.event_location = event_location;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEvent_time() {
+        return event_time;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEvent_time(String event_time) {
+        this.event_time = event_time;
     }
 
-    public String geturl() {
-        return url;
+    public String getEvent_date() {
+        return event_date;
     }
 
-    public void seturl(String url) {
-        this.url = url;
+    public void setEvent_date(String event_date) {
+        this.event_date = event_date;
     }
 
-    public Event(String id, String event_name, String desc, String loc, String email, String url) {
-        this.id = id;
-        this.ev_name = event_name;
-        this.desc = desc;
-        this.email = email;
-        this.loc = loc;
-        this.url = url;
+    public String getImageurl() {
+        return imageurl;
+    }
+
+    public void setImageurl(String imageurl) {
+        this.imageurl = imageurl;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+
+    public String getDate_added() {
+        return date_added;
+    }
+
+    public void setDate_added(String date_added) {
+        this.date_added = date_added;
+    }
+
+    public String getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 }

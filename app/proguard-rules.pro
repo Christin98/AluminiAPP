@@ -19,3 +19,31 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepattributes Exceptions, InnerClasses, Signature, Deprecated, SourceFile, LineNumberTable, *Annotation*, EnclosingMethod
+
+-keep class com.google.android.gms.ads.identifier.** { *; }
+
+# OkHttp3
+-dontwarn okhttp3.**
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# Retrofit 2.X
+-dontwarn retrofit2.**
+-dontwarn javax.annotation.**
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# PubNub
+-dontwarn com.pubnub.**
+-keep class com.pubnub.** { *; }

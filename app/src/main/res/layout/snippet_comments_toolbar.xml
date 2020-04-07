@@ -38,10 +38,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_marginTop="10dp"
                         android:layout_marginStart="80dp"
                         android:fontFamily="@font/iran_sans_mobile"
                         android:text="@string/comments"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="18sp" />
 
 

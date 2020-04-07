@@ -12,29 +12,24 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/first"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary">
+            <include
+                layout="@layout/toolbar"
+                />
 
-            <com.shuhart.stepview.StepView
-                android:id="@+id/step_view"
-                android:layout_width="209dp"
-                android:layout_height="37dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                app:sv_animationType="All"
-                app:sv_stepPadding="12dp"
-                app:sv_steps="@array/steps"
-                app:sv_typeface="@font/iran_sans_mobile"/>
+<!--            <com.shuhart.stepview.StepView-->
+<!--                android:id="@+id/step_view"-->
+<!--                android:layout_width="209dp"-->
+<!--                android:layout_height="37dp"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:padding="16dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.0"-->
+<!--                app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                app:layout_constraintRight_toRightOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintVertical_bias="0.0"-->
+<!--               />-->
         </LinearLayout>
 
         <LinearLayout
@@ -49,8 +44,7 @@
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/first">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:layout_width="match_parent"
@@ -74,6 +68,7 @@
                     android:layout_marginEnd="40dp"
                     android:layout_marginStart="40dp"
                     android:layout_width="match_parent"
+                    android:text="+91"
                     android:layout_height="wrap_content"
                     android:inputType="phone"/>
             </LinearLayout>
@@ -115,7 +110,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/first">
+            >
 
             <TextView
                 android:layout_width="match_parent"
@@ -166,6 +161,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cont"/>
             <TextView
+                android:id="@+id/resend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#019b77"
@@ -175,6 +171,17 @@
                 android:textSize="20sp"
                 android:layout_marginTop="20dp"/>
             <TextView
+                android:id="@+id/timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#019b77"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text=""
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/tap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tap_continue_to_accept_our_terms_data_policy_cookie_use_and_the_privacy_policy_and_terms_of_service"
@@ -219,6 +226,4 @@
                 android:text="@string/cont"/>
 
         </LinearLayout>
-    </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

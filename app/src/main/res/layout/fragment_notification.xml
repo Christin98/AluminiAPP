@@ -2,13 +2,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.project.major.alumniapp.fragment.NotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+<TextView
+    android:id="@+id/textView4"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_gravity="center"
+    android:text="@string/no_notifications"
+    android:textSize="25sp"
+    android:fontFamily="@font/montserrat_light" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notification_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/notification_fragment" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="?actionBarSize"/>
 
 </FrameLayout>

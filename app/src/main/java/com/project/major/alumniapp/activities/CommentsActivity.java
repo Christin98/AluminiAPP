@@ -28,12 +28,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.adapter.CommentListAdapter;
 import com.project.major.alumniapp.models.Comment;
+import com.project.major.alumniapp.models.NotificationModel;
 import com.project.major.alumniapp.models.UtilityInterface;
+import com.project.major.alumniapp.utils.FcmNotification;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.Objects;
 
 public class CommentsActivity extends AppCompatActivity implements UtilityInterface {
@@ -41,8 +40,8 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
     Context mContext = CommentsActivity.this;
     private final String TAG = "CommentsActivity";
     private String mediaId;
-    private String mediaNode;
     private String profileImage;
+    private String node;
     private ListView commentList;
     private ArrayList<Comment> list;
     private CommentListAdapter listAdapter;
@@ -66,22 +65,23 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
         Intent mediaIntent = getIntent();
         mediaId = mediaIntent.getStringExtra("mediaID");
         profileImage = mediaIntent.getStringExtra("profile_photo");
+        node = mediaIntent.getStringExtra("node");
 
 //        setCommentProfileImage(profileImage);
-        addComment(mediaNode,mediaId);
+        addComment(mediaId, node);
 
         commentList = findViewById(R.id.comment_list);
         list = new ArrayList<>();
         listAdapter = new CommentListAdapter(CommentsActivity.this,R.layout.layout_comment,list);
-        retrieveAllComments(mediaId,20);
+        retrieveAllComments(mediaId,20, node);
         commentList.setAdapter(listAdapter);
 
         goBack();
     }
 
-    private void retrieveAllComments( String mediaId, final long endLimit){
+    private void retrieveAllComments( String mediaId, final long endLimit, String node){
 
-        Query query = myRef.child("alumni_app").child("Events").child(mediaId).child("comment").orderByChild("date_added");
+        Query query = myRef.child("alumni_app").child(node).child(mediaId).child("comment").orderByChild("date_added");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -93,13 +93,13 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
                     if(isCommentAdded&&commentsLength==dataSnapshot.getChildrenCount()-1){
 
                         Comment comment = snapshot.getValue(Comment.class);
-                        list.add(0,new Comment(Objects.requireNonNull(comment).getComment(), comment.getDate_added(), comment.getUser_name(), comment.getComment_likes()));
+                        list.add(0,new Comment(Objects.requireNonNull(comment).getComment(), comment.getDate_added(), comment.getUser_name(),comment.getProfile_image(), comment.getComment_likes()));
                         commentList.smoothScrollToPosition(0);
                         isCommentAdded = false;
                     }
                     else if (!isCommentAdded&&commentsLength <= endLimit && commentsLength > startLimit) {
                         Comment comment = snapshot.getValue(Comment.class);
-                        list.add(new Comment(Objects.requireNonNull(comment).getComment(), comment.getDate_added(), comment.getUser_name(), comment.getComment_likes()));
+                        list.add(new Comment(Objects.requireNonNull(comment).getComment(), comment.getDate_added(), comment.getUser_name(),comment.getProfile_image(), comment.getComment_likes()));
                     }
                     commentsLength++;
                 }
@@ -114,14 +114,14 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
         });
     }
 
-    private void addComment(final String mediaNode, final String mediaId){
+    private void addComment( final String mediaId, String node){
 
         TextView postComment = findViewById(R.id.post_comment);
         final EditText commentText = findViewById(R.id.comment);
         postComment.setOnClickListener(v -> {
             if(commentText.getText().toString().length()>0) {
                 isCommentAdded = true;
-                addNewComment(mediaNode,mediaId, commentText.getText().toString());
+                addNewComment(mediaId, commentText.getText().toString(), node);
             }
         });
     }
@@ -132,10 +132,10 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
 //        GlideImageLoader.loadImageWithOutTransition(mContext,image,profileImage);
 //    }
 
-    public void addNewComment(final String node, final String mediaId, final String comment){
+    public void addNewComment( final String mediaId, final String comment, String node){
 
         final String commentId = myRef.push().getKey();
-        final String dateAdded = new SimpleDateFormat("dd-MM-yyyy ", Locale.getDefault()).format(Calendar.getInstance().getTime());
+        final String dateAdded = Long.toString(System.currentTimeMillis());
         Query query = myRef.child("alumni_app").child("users").child(mAuth.getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -144,9 +144,24 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
                 String userName = Objects.requireNonNull(dataSnapshot.child("user_name").getValue()).toString();
                 String profileImage = Objects.requireNonNull(dataSnapshot.child("user_image").getValue()).toString();
 
-                Comment comment_model = new Comment(comment, dateAdded, userName, 0);
-                myRef.child("alumni_app").child("Events").child(mediaId).child("comment")
+                Comment comment_model = new Comment(comment, dateAdded, userName, profileImage, 0);
+
+                myRef.child("alumni_app").child(node).child(mediaId).child("comment")
                         .child(Objects.requireNonNull(commentId)).setValue(comment_model);
+                new FcmNotification(CommentsActivity.this).commentNotification(mAuth.getCurrentUser().getUid(), userName, profileImage, comment, node, mediaId);
+                myRef.child("alumni_app").child(node).child(mediaId).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String uid = (node.equals("Events"))?dataSnapshot.child("user_id").getValue(String.class):dataSnapshot.child("userId").getValue(String.class);
+                        NotificationModel notificationModel = (uid.equals(mAuth.getCurrentUser().getUid()))?new NotificationModel("comment", "You", dateAdded, uid):new NotificationModel("comment", mAuth.getCurrentUser().getDisplayName(), dateAdded, uid);
+                        FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(uid).push().setValue(notificationModel);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

@@ -4,26 +4,26 @@ public class Comment {
     private String comment;
     private String date_added;
     private String user_name;
-//    private String profile_image;
+    private String profile_image;
     private long comment_likes;
 
     public Comment() {
     }
 
 
-//    public Comment(String comment, String date_added, String user_name, String profileImage, long commentLikes) {
-//        this.comment = comment;
-//        this.date_added = date_added;
-//        this.user_name = user_name;
-//        this.profile_image = profileImage;
-//        this.comment_likes = commentLikes;
-//    }
-public Comment(String comment, String date_added, String user_name, long commentLikes) {
-    this.comment = comment;
-    this.date_added = date_added;
-    this.user_name = user_name;
-    this.comment_likes = commentLikes;
-}
+    public Comment(String comment, String date_added, String user_name, String profileImage, long commentLikes) {
+        this.comment = comment;
+        this.date_added = date_added;
+        this.user_name = user_name;
+        this.profile_image = profileImage;
+        this.comment_likes = commentLikes;
+    }
+//public Comment(String comment, String date_added, String user_name, long commentLikes) {
+//    this.comment = comment;
+//    this.date_added = date_added;
+//    this.user_name = user_name;
+//    this.comment_likes = commentLikes;
+//}
 
     public String getComment() {
         return comment;
@@ -49,13 +49,13 @@ public Comment(String comment, String date_added, String user_name, long comment
         this.user_name = user_name;
     }
 
-//    public String getProfile_image() {
-//        return profile_image;
-//    }
-//
-//    public void setProfile_image(String profile_image) {
-//        this.profile_image = profile_image;
-//    }
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
+    }
 
     public long getComment_likes() {
         return comment_likes;

@@ -1,0 +1,106 @@
+[debug] [2020-03-23T13:46:31.508Z] ----------------------------------------------------------------------
+[debug] [2020-03-23T13:46:31.516Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Christin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2020-03-23T13:46:31.516Z] CLI Version:   7.15.1
+[debug] [2020-03-23T13:46:31.516Z] Platform:      win32
+[debug] [2020-03-23T13:46:31.516Z] Node Version:  v12.13.0
+[debug] [2020-03-23T13:46:31.520Z] Time:          Mon Mar 23 2020 19:16:31 GMT+0530 (India Standard Time)
+[debug] [2020-03-23T13:46:31.520Z] ----------------------------------------------------------------------
+[debug] [2020-03-23T13:46:31.520Z] 
+[debug] [2020-03-23T13:46:31.575Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-03-23T13:46:31.580Z] > authorizing via signed-in user
+[debug] [2020-03-23T13:46:31.580Z] [iam] checking project alumniconnect-a3500 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-03-23T13:46:31.589Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/alumniconnect-a3500:testIamPermissions  
+
+[debug] [2020-03-23T13:46:33.709Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'alumniconnect-a3500'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] +  functions: Finished running predeploy script.
+[debug] [2020-03-23T13:46:59.122Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "dependencies": {
+    "firebase-admin": "^8.6.0",
+    "firebase-functions": "^3.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "firebase-functions-test": "^0.1.6"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2020-03-23T13:46:59.135Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/alumniconnect-a3500/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-03-23T13:46:59.138Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/alumniconnect-a3500/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-03-23T13:47:01.545Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:02.054Z] <<< HTTP RESPONSE 200
+[info] +  functions: all necessary APIs are enabled
+[debug] [2020-03-23T13:47:02.065Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/alumniconnect-a3500/adminSdkConfig  
+ 
+[debug] [2020-03-23T13:47:02.782Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2020-03-23T13:47:02.795Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/alumniconnect-a3500/configs  
+ 
+[debug] [2020-03-23T13:47:04.792Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (39.23 KB) for uploading
+[debug] [2020-03-23T13:47:05.858Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/alumniconnect-a3500/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2020-03-23T13:47:14.620Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:14.622Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-f20d7421-e72b-4069-9ab0-d295a9703ca7/ac8d8ea7-8659-468f-978a-ccb01664ccb2.zip?GoogleAccessId=service-18991910369@gcf-admin-robot.iam.gserviceaccount.com&Expires=1584973035&Signature=viOZrlFZiFXPT112n7EC46LbMKhfWkhvjyXJcMb%2B1YvN0rD9ZTufoLc37bzDjldn5IaGO6H6YLsPv2bU3i7Dev%2BpMlvB%2FH0wRXTD7azZtFK%2B%2Bqhkt5X1AIsIlqSpUTnQ%2FbDK3BpWbm%2BD17kCI1CSRpoAciRlFOuRW%2FcG1OkhwjabNZ9BzMzW9a6F4LqCoaaGw3HYls3YOe1PqlasjAabYas1et5q65VfcAw55obCxIQUvA%2FunlOXWYVQ%2Fg%2FCLyKqn0sfhopxmuOHoDsse%2Fx%2FPJ07E0Kq3T8U6XW2Vg%2Bt4gXGTM32gWubXvA%2FssMpGCRw5u430k0xu1PPcdbkgWcK4g%3D%3D  
+ <request body omitted>
+[debug] [2020-03-23T13:47:16.218Z] <<< HTTP RESPONSE 200
+[info] +  functions: functions folder uploaded successfully
+[debug] [2020-03-23T13:47:16.226Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/alumniconnect-a3500/locations/-/functions  
+ 
+[debug] [2020-03-23T13:47:17.184Z] <<< HTTP RESPONSE 200
+[info] i  functions: creating Node.js 8 function helloWorld(us-central1)...
+[debug] [2020-03-23T13:47:17.197Z] Trigger is:  {"httpsTrigger":{}}
+[debug] [2020-03-23T13:47:17.200Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/alumniconnect-a3500/services/cloudscheduler.googleapis.com  
+ 
+[debug] [2020-03-23T13:47:19.460Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:19.464Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/alumniconnect-a3500/locations/us-central1/functions  
+
+[debug] [2020-03-23T13:47:20.700Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:20.701Z] Setting public policy for function helloWorld
+[debug] [2020-03-23T13:47:20.702Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/alumniconnect-a3500/locations/us-central1/functions/helloWorld:setIamPolicy  
+
+[debug] [2020-03-23T13:47:21.979Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:21.982Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/alumniconnect-a3500/locations/-/functions  
+ 
+[debug] [2020-03-23T13:47:22.629Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:22.632Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:23.583Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:25.586Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:26.460Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:28.462Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:29.339Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:31.342Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:32.220Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:34.220Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:35.101Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:37.102Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 
+[debug] [2020-03-23T13:47:37.982Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-23T13:47:39.984Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/YWx1bW5pY29ubmVjdC1hMzUwMC91cy1jZW50cmFsMS9oZWxsb1dvcmxkL0lwU1R1TFkzc3Bn  
+ 

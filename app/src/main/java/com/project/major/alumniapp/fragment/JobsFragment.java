@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.activities.AddJob;
+import com.project.major.alumniapp.activities.JobActivity;
 import com.project.major.alumniapp.models.Jobs;
+import com.project.major.alumniapp.utils.LoadingDialog;
 
 
 public class JobsFragment extends Fragment {
@@ -43,6 +46,8 @@ public class JobsFragment extends Fragment {
     private String likeId;
     private String mLikesString;
     private StringBuilder mStringBuilder;
+    private LoadingDialog loadingDialog;
+    TextView textView;
 
     public JobsFragment() {
         // Required empty public constructor
@@ -59,9 +64,15 @@ public class JobsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         addEvent = view.findViewById(R.id.addJob);
         recyclerView = view.findViewById(R.id.job_recyclerView);
+        textView = view.findViewById(R.id.textView4);
+        loadingDialog = new LoadingDialog(getActivity());
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+
+        loadingDialog.showLoading();
         fetch();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -86,11 +97,12 @@ public class JobsFragment extends Fragment {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.job_item, parent, false);
 
-                return new JobsFragment.ViewHolder(view);
+                return new ViewHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull JobsFragment.ViewHolder holder, int position, @NonNull Jobs jobs) {
+                textView.setVisibility(View.GONE);
                 String post_key = getRef(position).getKey();
                 if (jobs.getCompanyImage() != null) {
                     Glide.with(getContext())
@@ -106,13 +118,26 @@ public class JobsFragment extends Fragment {
                 holder.lastDate.setText(jobs.getLastDate());
                 holder.experience.setText(jobs.getExperience());
                 holder.location.setText(jobs.getLocation());
+
+                holder.layout.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), JobActivity.class);
+                    intent.putExtra("id", jobs.getId());
+                    startActivity(intent);
+                });
             }
         };
+        if(adapter.getItemCount() != 0){
+            textView.setVisibility(View.GONE);
+        } else {
+            textView.setVisibility(View.VISIBLE);
+            loadingDialog.hideLoading();
+        }
+        recyclerView.scrollToPosition(adapter.getItemCount() -1);
         recyclerView.setAdapter(adapter);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView companyImage;
         TextView companyName;
@@ -120,6 +145,7 @@ public class JobsFragment extends Fragment {
         TextView lastDate;
         TextView experience;
         TextView location;
+        LinearLayout layout;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -129,6 +155,7 @@ public class JobsFragment extends Fragment {
             lastDate = itemView.findViewById(R.id.last_date);
             experience = itemView.findViewById(R.id.exprience);
             location = itemView.findViewById(R.id.location);
+            layout = itemView.findViewById(R.id.joblayout);
         }
     }
 

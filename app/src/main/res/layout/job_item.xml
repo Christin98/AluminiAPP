@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2020.
-  ~ Christin B Koshy.
-  ~ 1
-  -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/joblayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -58,14 +53,6 @@
                 android:paddingStart="@dimen/feed_item_profile_info_padd" >
 
 
-            <TextView
-                android:id="@+id/exprience"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/timestamp"
-                android:textSize="@dimen/feed_item_timestamp"
-                android:layout_weight="1"/>
-
                 <TextView
                     android:id="@+id/location"
                     android:layout_width="match_parent"
@@ -73,6 +60,14 @@
                     android:textColor="@color/timestamp"
                     android:textSize="@dimen/feed_item_timestamp"
                     android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/exprience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/timestamp"
+                    android:textSize="@dimen/feed_item_timestamp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

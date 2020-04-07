@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout
         android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFF"
         android:paddingBottom="16dp"
         android:layout_alignParentStart="true">
 
-        <ImageButton
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/successIcon"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:background="#00FFFFFF"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="image"
-            android:src="@drawable/ic_check_circle" />
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:lottie_rawRes="@raw/sucess_anim"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            app:lottie_repeatMode="restart"
+            app:lottie_repeatCount="50"/>
 
         <TextView
             android:id="@+id/successMessage"

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:padding="12dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="100dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <CheckBox
+        android:id="@+id/name_fil"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Name"/>
+
+    <CheckBox
+        android:id="@+id/place_fil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Place"/>
+    <CheckBox
+        android:id="@+id/profession_fil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profession"/>
+    <CheckBox
+        android:id="@+id/organization_fil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Organozation"/>
+
+    <Button
+        android:id="@+id/apply_fil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorAccent"
+        android:text="APPLY"
+        android:textColor="#fff" />
+
+</LinearLayout>

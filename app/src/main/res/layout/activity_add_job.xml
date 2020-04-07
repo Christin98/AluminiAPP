@@ -12,6 +12,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.AddJob">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_margin="5dp"
         android:orientation="vertical"
@@ -126,4 +129,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

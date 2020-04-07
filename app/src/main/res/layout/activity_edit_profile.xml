@@ -15,17 +15,17 @@
     android:orientation="vertical"
     tools:context=".activities.ProfileActivity">
 
-    <com.intrusoft.library.FrissonView
-        android:id="@+id/wave_head"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        frisson:tideCount="3"
-        android:background="#00A99D"
-        android:backgroundTint="#00A99D"
-        frisson:tideHeight="50dp"
-        frisson:alphaValue="70"
-        frisson:autoTint="true"/>
+<!--    <com.intrusoft.library.FrissonView-->
+<!--        android:id="@+id/wave_head"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        frisson:tideCount="3"-->
+<!--        android:background="#00A99D"-->
+<!--        android:backgroundTint="#00A99D"-->
+<!--        frisson:tideHeight="50dp"-->
+<!--        frisson:alphaValue="70"-->
+<!--        frisson:autoTint="true"/>-->
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -137,17 +137,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Current State"
+                        android:text="Select A State"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
-                        android:visibility="gone"/>
+                        android:textStyle="bold" />
                     <TextView
                         android:id="@+id/edit_state_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/select_state"
-                        android:visibility="gone"
-                        />
+                        android:hint="@string/select_state" />
 
                     <TextView
                         android:id="@+id/edit_city_tv"
@@ -156,14 +153,12 @@
                         android:layout_marginTop="10dp"
                         android:text="Current City"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
-                        android:visibility="gone"/>
+                        android:textStyle="bold" />
                     <TextView
                         android:id="@+id/edit_city_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/select_city"
-                        android:visibility="gone" />
+                        android:hint="@string/select_city" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -279,8 +274,8 @@
                     android:layout_toEndOf="@+id/imageview_edit_profile" />
 
                 <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"

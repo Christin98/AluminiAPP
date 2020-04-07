@@ -4,31 +4,38 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.SearchView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import androidx.appcompat.widget.SearchView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
-import com.project.major.alumniapp.activities.MainActivity;
+import com.project.major.alumniapp.adapter.UserListAdapter;
 import com.project.major.alumniapp.models.User;
+import com.project.major.alumniapp.utils.LoadingDialog;
+
+import java.util.ArrayList;
 
 public class ConnectFragment extends Fragment {
 
@@ -36,13 +43,21 @@ public class ConnectFragment extends Fragment {
     private DatabaseReference databaseReference;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private FirebaseRecyclerAdapter adapter;
+    private UserListAdapter listAdapter;
+    private ArrayList<User> searchList;
     private FirebaseAuth mAuth;
     private String profileImgUrl = "";
     private boolean mLikedByCurrentUser = false;
     private String likeId;
     private String mLikesString;
     private StringBuilder mStringBuilder;
+    private String[] filt = {"city"};
+    private String quer = "jaipur";
+    private LoadingDialog loadingDialog;
+    TextView textView;
+
+    FloatingActionButton filter_fab;
+
     Context context;
 
     public ConnectFragment() {
@@ -62,63 +77,111 @@ public class ConnectFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_connect, container, false);
         mAuth = FirebaseAuth.getInstance();
         recyclerView = view.findViewById(R.id.user_recyclerView);
+        filter_fab = view.findViewById(R.id.filter_fab);
+        textView = view.findViewById(R.id.textView4);
         linearLayoutManager = new LinearLayoutManager(getActivity());
+        loadingDialog = new LoadingDialog(getActivity());
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        fetch();
-
+        searchList = new ArrayList<>();
+        listAdapter = new UserListAdapter(getContext(), searchList);
+        loadingDialog.showLoading();
+        recyclerView.setAdapter(listAdapter);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("alumni_app").child("users");
         databaseReference.keepSynced(true);
+
+        fetch(quer);
+
+        filter_fab.setOnClickListener(v -> showbottomsheet());
+
         return view;
     }
 
-    private void fetch() {
-        Query query = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").orderByChild("").equalTo("");
+    private void showbottomsheet() {
 
-        FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>().setQuery(query, User.class).build();
+        CheckBox prof;
+        CheckBox name;
+        CheckBox org;
+        CheckBox place;
+        Button apply;
+        StringBuilder stringBuilder;
 
-        adapter = new FirebaseRecyclerAdapter<User, ConnectFragment.ViewHolder>(options) {
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_filter, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+        dialog.setContentView(view);
+        prof = view.findViewById(R.id.profession_fil);
+        name = view.findViewById(R.id.name_fil);
+        org = view.findViewById(R.id.organization_fil);
+        place = view.findViewById(R.id.place_fil);
+        apply = view.findViewById(R.id.apply_fil);
+        stringBuilder = new StringBuilder();
 
-            @NonNull
-            @Override
-            public ConnectFragment.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.user_item, parent, false);
-
-                return new ConnectFragment.ViewHolder(view);
+        prof.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                stringBuilder.append("profession");
+                stringBuilder.append(",");
             }
+        });
 
-            @Override
-            protected void onBindViewHolder(@NonNull ConnectFragment.ViewHolder holder, int position, @NonNull User user) {
-                String post_key = getRef(position).getKey();
-
-//                Log.d("USER CLASS", user.getemail());
-                holder.cardView.setVisibility(View.VISIBLE);
-                holder.userlogo.setImageResource(R.drawable.userpic);
-                holder.username.setText(user.getUser_name());
-                holder.email.setText(user.getEmail());
-
+        name.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                stringBuilder.append("search_name");
+                stringBuilder.append(",");
             }
-        };
-        recyclerView.setAdapter(adapter);
+        });
+
+        org.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                stringBuilder.append("organization");
+                stringBuilder.append(",");
+            }
+        });
+
+        place.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                stringBuilder.append("city");
+                stringBuilder.append(",");
+            }
+        });
+
+        apply.setOnClickListener(v ->{
+            filt = stringBuilder.toString().split(",");
+            dialog.dismiss();
+        });
+
+        dialog.show();
+
+        for (String s : filt) {
+            Log.d("TAG", s);
+        }
     }
 
+    private void fetch(String keyword) {
+        textView.setVisibility(View.GONE);
+        if (keyword.length() > 0) {
+            for (String s : filt) {
+                Query query = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").orderByChild(s).startAt(keyword.toUpperCase()).endAt(keyword.toLowerCase() + "\uf8ff");
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            Log.d("TAG", "onDataChange: "+dataSnapshot.getValue());
+                            searchList.add(singleSnapshot.getValue(User.class));
+                            listAdapter.notifyDataSetChanged();
+                            loadingDialog.hideLoading();
+                        }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+                    }
 
-        CardView cardView;
-        ImageView userlogo;
-        TextView username;
-        TextView email;
-
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            cardView = itemView.findViewById(R.id.userCardView);
-            userlogo = itemView.findViewById(R.id.profilePicuser);
-            username = itemView.findViewById(R.id.username);
-            email = itemView.findViewById(R.id.email);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        searchList.clear();
+//                        listAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
     }
 
@@ -128,32 +191,31 @@ public class ConnectFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = new SearchView(((MainActivity) context).getSupportActionBar().getThemedContext());
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        item.setActionView(searchView);
+        SearchView searchView = (SearchView) item.getActionView();
+//        item.setActionView(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchList.clear();
+                listAdapter.notifyDataSetChanged();
+                quer = query.trim().toLowerCase();
+                loadingDialog.showLoading();
+                fetch(quer);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchList.clear();
+                listAdapter.notifyDataSetChanged();
+                quer = newText.trim().toLowerCase();
+                fetch(quer);
                 return false;
             }
         });
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
 }
 

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,8 +27,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +51,7 @@ import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.Jobs;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.FileCompressor;
+import com.project.major.alumniapp.utils.LoadingDialog;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.vikktorn.picker.City;
 import com.vikktorn.picker.CityPicker;
@@ -115,8 +120,11 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
     List<String> l1,l2,l3;
     int pos;
     String nav_name;
+    String nav_state;
     String batch;
     String createdat;
+
+    LoadingDialog loadingDialog;
 
     private static final String IMAGE_DIRECTORY = "/AlumniAPP/Profile/Pics";
     private int GALLERY = 1, CAMERA = 2;
@@ -127,6 +135,8 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+
 
         profilePic = findViewById(R.id.imageview_edit_profile);
         plusImg = findViewById(R.id.plus_img_btn);
@@ -140,13 +150,14 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         cityTv = findViewById(R.id.edit_city_tv);
         citySpinner = findViewById(R.id.edit_city_spinner);
         navodaya = findViewById(R.id.edit_navodaya);
+        loadingDialog = new LoadingDialog(EditProfileActivity.this);
         navodhyaSpinner = findViewById(R.id.edit_navodhya_spinner);
         batchSpinner = findViewById(R.id.edit_batch_spinner);
         proProfession = findViewById(R.id.edit_profile_profession);
         proOrganization = findViewById(R.id.edit_profile_organization);
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
-        profilePicReference = FirebaseStorage.getInstance().getReference("alumni_app").child("job_pics");
+        profilePicReference = FirebaseStorage.getInstance().getReference("alumni_app").child("users");
         user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").child(firebaseUser.getUid());
         stateObject = new ArrayList<>();
         cityObject = new ArrayList<>();
@@ -163,7 +174,22 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         }else {
             profilePic.setImageResource(R.drawable.profle_user);
         }
-        proPhone.setText(firebaseUser.getPhoneNumber());
+//        proPhone.setText(firebaseUser.getPhoneNumber());
+
+        user_DB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                proPhone.setText(user.getPhone());
+                proProfession.setText(user.getProfession());
+                proOrganization.setText(user.getOrganization());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         try {
             getStateJson();
@@ -176,7 +202,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        
+
 
         countryPicker = new CountryPicker.Builder().with(this).listener(this).build();
 
@@ -228,6 +254,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         navodaya.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                nav_state = l1.get(position);
                 pos = position;
                 add();
             }
@@ -1133,7 +1160,87 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         });
 
         ImgBtnDone.setOnClickListener(v -> {
-            user_DB.child("").setValue("");
+            loadingDialog.showLoading();
+            user_DB.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        if (!user.getUser_name().equals(proName.getText().toString())){
+                            user_DB.child("user_name").setValue(proName.getText().toString());
+                        } else if(TextUtils.isEmpty(proName.getText().toString())){
+                            proName.setError("Enter Your Name.");
+                        }
+
+                        if (!user.getEmail().equals(proEmail.getText().toString())){
+                            user_DB.child("email").setValue(proEmail.getText().toString());
+                            firebaseUser.updateEmail(proEmail.getText().toString());
+                        } else if(TextUtils.isEmpty(proEmail.getText().toString())){
+                            proEmail.setError("Enter Your Email.");
+                        }
+
+                        if (!user.getPhone().equals(proPhone.getText().toString())){
+                            user_DB.child("phone").setValue(proPhone.getText().toString());
+//                            AuthCredential credential = PhoneAuthProvider.getCredential();
+//                            firebaseUser.updatePhoneNumber(proEmail.getText().toString());
+                        } else if(TextUtils.isEmpty(proEmail.getText().toString())){
+                            proPhone.setError("Enter Your Phone Number.");
+                        }
+
+                        if (!user.getCountry().equals(countrySpinner.getText().toString())){
+                            user_DB.child("country").setValue(countrySpinner.getText().toString());
+                        } else if(TextUtils.isEmpty(countrySpinner.getText().toString())){
+                            countrySpinner.setError("Select Your Country.");
+                        }
+
+                        if (!user.getState().equals(stateSpinner.getText().toString())){
+                            user_DB.child("state").setValue(stateSpinner.getText().toString());
+                        } else if(TextUtils.isEmpty(stateSpinner.getText().toString())){
+                            stateSpinner.setError("Select Your State.");
+                        }
+
+                        if (!user.getCity().equals(citySpinner.getText().toString())){
+                            user_DB.child("city").setValue(citySpinner.getText().toString());
+                        } else if(TextUtils.isEmpty(citySpinner.getText().toString())){
+                            citySpinner.setError("Select Your City.");
+                        }
+
+                        if (!user.getNav_state().equals(nav_state)){
+                            user_DB.child("nav_state").setValue(nav_state);
+                        }
+
+                        if (!user.getNavodhya().equals(nav_name)){
+                            user_DB.child("navodhya").setValue(nav_name);
+                        }
+
+                        if (!user.getBatch().equals(batch)){
+                            user_DB.child("batch").setValue(batch);
+                        }
+
+
+                        if (!user.getProfession().equals(proProfession.getText().toString())){
+                            user_DB.child("profession").setValue(proProfession.getText().toString());
+                        } else if(TextUtils.isEmpty(proProfession.getText().toString())){
+                            proProfession.setError("Enter Your Profession.");
+                        }
+
+
+                        if (!user.getOrganization().equals(proOrganization.getText().toString())){
+                            user_DB.child("organization").setValue(proOrganization.getText().toString());
+                        } else if(TextUtils.isEmpty(proOrganization.getText().toString())){
+                            proOrganization.setError("Enter Your Organization.");
+                        }
+                        TastyToast.makeText(EditProfileActivity.this, "Profile Updated", TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
+                        loadingDialog.hideLoading();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         });
 
         user_DB.addValueEventListener(new ValueEventListener() {
@@ -1275,7 +1382,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         UploadTask uploadTask;
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
         storageReference = profilePicReference.child("alumniapp"+firebaseUser.getDisplayName()+System.currentTimeMillis());
-        uploadTask = storageReference.putFile(Uri.fromFile(compressor.compressImage(path)),metadata);
+        uploadTask = storageReference.putFile(compressor.imageCompressor(path),metadata);
         uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
             String  url = uri1.toString();
             user_DB.child("user_image").setValue(url);

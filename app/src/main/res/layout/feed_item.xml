@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2020.
-  ~ Christin B Koshy.
-  ~ 1
-  -->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/layout_bg"
     android:orientation="vertical">
 
@@ -23,7 +17,7 @@
                 android:id="@+id/profilePic"
                 android:layout_width="@dimen/feed_item_profile_pic"
                 android:layout_height="@dimen/feed_item_profile_pic"
-                android:src="@drawable/userpic"
+                android:src="@drawable/profle_user"
                 android:scaleType="centerCrop" >
             </de.hdodenhof.circleimageview.CircleImageView>
 
@@ -60,7 +54,7 @@
             android:paddingTop="@dimen/feed_item_status_pad_top" />
 
         <TextView
-            android:id="@+id/txtUrl"
+            android:id="@+id/tags"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:linksClickable="true"
@@ -70,10 +64,96 @@
             android:paddingRight="@dimen/feed_item_status_pad_left_right"
             android:textColorLink="@color/link" />
 
+    <RelativeLayout
+        android:id="@+id/media_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.Holo.Light.ProgressBar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+
         <ImageView
+            android:id="@+id/video_indicater"
+            android:layout_width="77dp"
+            android:layout_height="77dp"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_option_video" />
+
+        <com.project.major.alumniapp.utils.SquareImageView
             android:id="@+id/feedImage1"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="@color/white"
+            android:layout_height="300dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginStart="3dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder"
             android:visibility="visible" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/like_comment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+
+        <com.like.LikeButton
+            android:id="@+id/heart_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:icon_size="22dp"
+            app:anim_scale_factor="3"
+            app:icon_type="heart" />
+
+        <ImageView
+            android:id="@+id/comment"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_action_comment" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/like_comment_layout"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/like_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:padding="2dp"
+            android:text="Like"
+            android:paddingStart="5dp"
+            android:textColor="@color/black" />
+
+
+        <TextView
+            android:id="@+id/view_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/iran_sans_mobile"
+            android:padding="2dp"
+            android:paddingStart="5dp"
+            android:text="View all comment"
+            android:textColor="@color/dark_grey" />
+
+    </LinearLayout>
+
+</LinearLayout>

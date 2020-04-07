@@ -17,9 +17,11 @@ public class User {
     private String nav_state;
     private String navodhya;
     private String batch;
+    private String token;
     private String profession;
     private String organization;
     private String search_name;
+    private String verification_ID;
 
     public User() {
         //This Constructor is required.
@@ -175,6 +177,15 @@ public class User {
         this.batch = batch;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+
     public String getProfession() {
         return profession;
     }
@@ -197,5 +208,13 @@ public class User {
 
     public void setSearch_name(String search_name) {
         this.search_name = search_name;
+    }
+
+    public String getVerification_ID() {
+        return verification_ID;
+    }
+
+    public void setVerification_ID(String verification_ID) {
+        this.verification_ID = verification_ID;
     }
 }

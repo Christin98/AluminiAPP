@@ -1,33 +1,28 @@
-/******************************************************************************
- * Copyright (c) 2020.                                                        *
- * Christin B Koshy.                                                          *
- * 1                                                                          *
- ******************************************************************************/
 
 package com.project.major.alumniapp.models;
 
 public class Feeds {
-    String id;
-    String name;
-    String userId;
-    String timestamp;
-    String caption_text;
-    String text_url;
-    String feed_image_url;
+    private String id;
+    private String name;
+    private String userId;
+    private String timestamp;
+    private String caption_text;
+    private String tags;
+    private String profile_img;
 
     public Feeds(){
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
 
 
-    public Feeds(String id,String name, String userId, String timestamp, String caption_text, String text_url, String feed_image_url) {
+    public Feeds(String id, String name, String userId, String timestamp, String caption_text, String tags, String profile_img) {
         this.id = id;
         this.name = name;
         this.userId = userId;
         this.timestamp = timestamp;
         this.caption_text = caption_text;
-        this.text_url = text_url;
-        this.feed_image_url = feed_image_url;
+        this.tags = tags;
+        this.profile_img = profile_img;
     }
 
     public String getId() {
@@ -72,19 +67,20 @@ public class Feeds {
         this.caption_text = caption_text;
     }
 
-    public String getText_url() {
-        return text_url;
+    public String getTags() {
+        return tags;
     }
 
-    public void setText_url(String text_url) {
-        this.text_url = text_url;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
-    public String getFeed_image_url() {
-        return feed_image_url;
+    public String getProfile_img() {
+        return profile_img;
     }
 
-    public void setFeed_image_url(String feed_image_url) {
-        this.feed_image_url = feed_image_url;
+    public void setProfile_img(String profile_img) {
+        this.profile_img = profile_img;
     }
+
 }

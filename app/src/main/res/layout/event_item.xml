@@ -1,10 +1,11 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/layout_bg"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/layout_bg"
-    tools:context=".activities.MainActivity">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,32 +29,65 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_photo"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/userpic"
                 android:layout_marginStart="5dp" />
 
             <TextView
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="15dp"
                 android:layout_toEndOf="@id/profile_photo"
-                android:text="@string/email"
                 android:fontFamily="@font/iran_sans_mobile"
+                android:padding="2dp"
+                android:text="Christin"
                 android:textColor="@color/black" />
 
-            <ImageView
-                android:id="@+id/options"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_option_menu" />
+            <TextView
+                android:id="@+id/date_added"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="1dp"
+                android:padding="2dp"
+                android:layout_toEndOf="@id/user_name"
+                android:fontFamily="@font/iran_sans_mobile"
+                android:text="Date"
+                android:textColor="@color/grey" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/profile_photo"
+                android:layout_below="@+id/user_name">
+
+                <TextView
+                    android:id="@+id/event_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_toEndOf="@id/profile_photo"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:padding="3dp"
+                    android:textSize="18sp"
+                    android:text="Name"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:text="Tags"
+                    android:padding="2dp"
+                    android:layout_below="@+id/event_name"
+                    android:layout_toEndOf="@id/profile_photo"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:textColor="@color/blue" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -68,77 +102,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/display_name_layout">
 
-            <ImageView
+            <com.project.major.alumniapp.utils.SquareImageView
                 android:id="@+id/media_post"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:src="@drawable/userpic" />
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                android:src="@drawable/placeholder" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
+                style="@android:style/Widget.Holo.Light.ProgressBar"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:visibility="visible" />
 
-<!--            <ImageView-->
-<!--                android:id="@+id/video_indicater"-->
-<!--                android:layout_width="77dp"-->
-<!--                android:layout_height="77dp"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:visibility="visible"-->
-<!--                app:srcCompat="@drawable/ic_option_video" />-->
-
 
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/cap_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/media_views">
-
-            <LinearLayout
-                android:id="@+id/caption_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/event_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
-                    android:padding="2dp"
-                    android:textSize="18sp"
-                    android:paddingStart="5dp"
-                    android:text="Event Name"
-                    android:textColor="@color/black" />
-                <TextView
-                    android:id="@+id/caption_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
-                    android:padding="2dp"
-                    android:text="caption"
-                    android:paddingStart="5dp"
-                    android:textColor="@color/black" />
-                <TextView
-                    android:id="@+id/event_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
-                    android:padding="2dp"
-                    android:paddingStart="5dp"
-                    android:text="30 july"
-                    android:textColor="@color/dark_grey" />
-            </LinearLayout>
-
-        </RelativeLayout>
-
 
         <RelativeLayout
             android:id="@+id/lc_layout"
@@ -148,9 +130,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cap_layout">
-
-
+            app:layout_constraintTop_toBottomOf="@+id/media_views">
 
             <LinearLayout
                 android:id="@+id/like_comment_layout"
@@ -160,22 +140,26 @@
                 android:layout_marginTop="3dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/heart_outline"
+                <com.like.LikeButton
+                    android:id="@+id/thumb_button"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginStart="6dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_heart_border" />
+                    app:circle_end_color="@android:color/holo_blue_dark"
+                    app:circle_start_color="@android:color/holo_blue_bright"
+                    app:dots_primary_color="@android:color/holo_blue_light"
+                    app:dots_secondary_color="@android:color/holo_blue_dark"
+                    app:icon_size="22dp"
+                    app:like_drawable="@drawable/thumb_on"
+                    app:unlike_drawable="@drawable/thumb_off" />
 
-                <ImageView
-                    android:id="@+id/heart_red"
+                <com.like.LikeButton
+                    android:id="@+id/thumb_button2"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginStart="6dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_heart_red"
-                    android:visibility="gone" />
+                    app:anim_scale_factor="3"
+                    app:icon_size="22dp"
+                    app:like_drawable="@drawable/ic_unlikec"
+                    app:unlike_drawable="@drawable/ic_unlike" />
 
                 <ImageView
                     android:id="@+id/comment"
@@ -198,38 +182,69 @@
                     android:id="@+id/like_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
+                    android:fontFamily="@font/montserrat_light"
                     android:padding="2dp"
-                    android:text="Like"
                     android:paddingStart="5dp"
                     android:textColor="@color/black" />
 
+                <TextView
+                    android:id="@+id/caption_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/like_comment_layout"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:layout_weight="2"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:layout_weight="2"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:layout_weight="2"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
 
                 <TextView
                     android:id="@+id/view_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
+                    android:fontFamily="@font/montserrat_light"
                     android:padding="2dp"
                     android:paddingStart="5dp"
                     android:text="View all comment"
                     android:textColor="@color/dark_grey" />
-
-                <TextView
-                    android:id="@+id/date_added"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/iran_sans_mobile"
-                    android:padding="2dp"
-                    android:paddingStart="5dp"
-                    android:text="30 july"
-                    android:textColor="@color/dark_grey" />
-
             </LinearLayout>
-
         </RelativeLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

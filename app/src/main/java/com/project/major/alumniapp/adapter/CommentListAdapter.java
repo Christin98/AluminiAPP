@@ -1,14 +1,9 @@
-/******************************************************************************
- * Copyright (c) 2020.                                                        *
- * Christin B Koshy.                                                          *
- * 29                                                                         *
- ******************************************************************************/
-
 package com.project.major.alumniapp.adapter;
 
 import android.app.Activity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +18,8 @@ import androidx.annotation.Nullable;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.Comment;
 import com.project.major.alumniapp.models.UtilityInterface;
+import com.project.major.alumniapp.utils.GlideApp;
+import com.project.major.alumniapp.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -86,14 +83,16 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.comment.setText(str);
         //Setting date
-        holder.dateAdded.setText(commentData.getDate_added());
+        ImageUtils.loadImageCenterCrop(GlideApp.with(getContext()), commentData.getProfile_image(), holder.profileImage, 50, 50);
+        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.parseLong(commentData.getDate_added()), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+        holder.dateAdded.setText(timeAgo);
 
         holder.addLike.setOnClickListener(v -> Toast.makeText(mContext, "This feature is not added yet!!", Toast.LENGTH_SHORT).show());
 
         holder.commentReply.setOnClickListener(v -> Toast.makeText(mContext, "This feature is not added yet!!", Toast.LENGTH_SHORT).show());
 
 
-        if(position>=limit-1) {
+        if(position >= limit-1) {
             limit+=20;
             utilityInterface.loadMore(limit);
         }

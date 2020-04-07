@@ -1,6 +1,5 @@
 package com.project.major.alumniapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -21,11 +20,8 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
@@ -42,8 +38,9 @@ public class Login extends AppCompatActivity {
     ImageView top_curve;
     EditText email,password;
     TextView login_title;
-    TextView logo;
+    ImageView logo;
     TextView copyrightTV;
+    TextView forgotpassword;
     LinearLayout new_user_layout;
     CardView login_card;
     SessionManager sessionManager;
@@ -52,7 +49,7 @@ public class Login extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     User userList;
-    String phoneVer = "false";
+    boolean phoneVer = false;
 
     DatabaseReference user_DB;
 
@@ -66,6 +63,7 @@ public class Login extends AppCompatActivity {
         validation = new AwesomeValidation(ValidationStyle.UNDERLABEL);
         validation.setContext(this);
         loadingDialog = new LoadingDialog(this);
+        forgotpassword = findViewById(R.id.textView_forgetpasswd);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         user_DB = FirebaseDatabase.getInstance().getReference("alumni_app").child("users");
@@ -100,6 +98,8 @@ public class Login extends AppCompatActivity {
         int year = calendar.get(Calendar.YEAR);
         copyrightTV.setText("AlumniAPP © " + year);
 
+        forgotpassword.setOnClickListener(v -> startActivity(new Intent(Login.this, ResetPasswordActivity.class)));
+
         validation.addValidation(this, R.id.editText_login_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         validation.addValidation(this, R.id.editText_login_password, "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*]).{8,}", R.string.passwerror);
     }
@@ -124,85 +124,21 @@ public class Login extends AppCompatActivity {
                 Map<String, String> users = new HashMap<>();
                 String user_ID = auth.getCurrentUser().getUid();
                 user = auth.getCurrentUser();
-                phoneVerified();
                 boolean isVerified = false;
                 if (user != null) {
-                    isVerified = user.isEmailVerified() && phoneVer.equals("true");
+                    isVerified = user.isEmailVerified();
                 }
                 if (isVerified) {
-                    user_DB.child(user_ID).child("verified").setValue("true");
-                    user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                users.put("name", ds.child("user_name").getValue(String.class));
-                                users.put("email", ds.child("email").getValue(String.class));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
+                    loadingDialog.showLoading();
                     sessionManager.createLoginSession(users.get("name"), users.get("email"), user_ID);
-
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
-                } else if (!phoneVer.equals("true")) {
-                    user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                users.put("name", ds.child("user_name").getValue(String.class));
-                                users.put("email", ds.child("email").getValue(String.class));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                    Intent intent = new Intent(Login.this, PhoneVerificationActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra("email", email);
-                    intent.putExtra("password", passw);
-                    intent.putExtra("name", users.get("name"));
-                    startActivity(intent);
-                    finish();
-
-                } else {
+                }  else {
+                    loadingDialog.hideLoading();
                     TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
                     signOut();
-                }
-                Map<String, String> usermap = new HashMap<>();
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference ref = database.getReference("alumni-app").child("users").child(user.getUid());
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            usermap.put("name", ds.child("name").getValue(String.class));
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-                if (user.isEmailVerified()) {
-                    TastyToast.makeText(this, "Logged IN Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
-                    sessionManager.createLoginSession(usermap.get("name"), email, user_ID);
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
-                } else {
-                    signOut();
-                    TastyToast.makeText(this, "Login Error.Please Verify your Email First.", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
                 }
             } else{
                     TastyToast.makeText(this, "Your email and password may be incorrect. Please check & try again.", TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
@@ -214,26 +150,4 @@ public class Login extends AppCompatActivity {
     private void signOut(){
         auth.signOut();
     }
-
-    private void phoneVerified(){
-        String user_ID = user.getUid();
-        user_DB.child(user_ID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-               if (dataSnapshot.getValue() != null){
-                   User user = dataSnapshot.getValue(User.class);
-                   phoneVer = user.getPhone_verified();
-               } else {
-                   TastyToast.makeText(Login.this, "No Database Found", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
-               }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                TastyToast.makeText(getApplicationContext(), databaseError.getMessage(), TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
-            }
-        });
-    }
-
 }

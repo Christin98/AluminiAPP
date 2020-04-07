@@ -21,4 +21,16 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+       android:id="@+id/filter_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:layout_marginBottom="?actionBarSize"
+        android:src="@drawable/ic_filter"
+        tools:targetApi="lollipop" />
+
 </FrameLayout>

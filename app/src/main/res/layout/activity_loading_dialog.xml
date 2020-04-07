@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/loading_dialog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="260dp"
         android:layout_centerInParent="true"
         android:background="@drawable/button_style"
         android:gravity="center"
@@ -20,8 +20,8 @@
         android:padding="6dp">
 
             <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:layout_gravity="center"
@@ -33,18 +33,18 @@
                 app:lottie_repeatCount="50"/>
 
 
-<!--        <TextView-->
-<!--            android:id="@+id/msg_tv_dia"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_margin="16dp"-->
-<!--            android:padding="6dp"-->
-<!--            android:fontFamily="serif-monospace"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/loading"-->
-<!--            android:textColor="@android:color/white"-->
-<!--            android:textSize="18sp" />-->
+        <TextView
+            android:id="@+id/msg_tv_dia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:padding="6dp"
+            android:fontFamily="serif-monospace"
+            android:gravity="center"
+            android:text="LOADING..."
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

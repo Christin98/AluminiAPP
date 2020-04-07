@@ -14,15 +14,15 @@
         android:layout_centerHorizontal="true">
 
         <ImageView
-            android:layout_width="115dp"
-            android:layout_height="115dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/connecting_people"
             android:contentDescription="college logo"
             android:id="@+id/splashscreen_logo"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+             />
 
         <com.mikepenz.iconics.view.IconicsTextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@id/splashscreen_logo"
@@ -32,7 +32,4 @@
             android:shadowColor="@color/black_de"
             android:textSize="25dp"/>
     </RelativeLayout>
-
-
-
 </RelativeLayout>

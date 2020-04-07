@@ -270,13 +270,14 @@ public class AddJob extends AppCompatActivity {
         UploadTask uploadTask;
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
         storageReference = jobrefrence.child("alumniapp"+id);
-        uploadTask = storageReference.putFile(Uri.fromFile(compressor.compressImage(path)),metadata);
+        uploadTask = storageReference.putFile(compressor.imageCompressor(path),metadata);
         uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
             String  url = uri1.toString();
             Jobs uploadJobs = new Jobs("alumniapp"+id, url, comapnyName, jobProfile, jobdescription, lastdate, item, location);
             mDatabase.child("Jobs").child(id).setValue(uploadJobs).addOnSuccessListener(aVoid -> {
                 progressDialog.dismiss();
                 TastyToast.makeText(getApplicationContext(), "Post Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+                finish();
             });
         })).addOnFailureListener(e -> {
             progressDialog.dismiss();
@@ -305,6 +306,7 @@ public class AddJob extends AppCompatActivity {
         mDatabase.child("Jobs").child(id).setValue(uploadPost).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
             TastyToast.makeText(this, "Event Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
+            finish();
         });
     }
 
