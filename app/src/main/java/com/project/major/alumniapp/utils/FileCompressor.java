@@ -31,7 +31,7 @@ public class FileCompressor {
         } else {
             file = new File(SiliCompressor.with(context).compress(path1, f));
         }
-        Log.e("Compressor", file.getPath());
+//        Log.e("Compressor",file.getPath());
         return Uri.fromFile(file);
     }
 

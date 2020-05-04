@@ -26,6 +26,7 @@ import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.activities.AddEvent;
 import com.project.major.alumniapp.adapter.EventAdapter;
 import com.project.major.alumniapp.models.Event;
+import com.project.major.alumniapp.models.User;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class EventFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private ProgressBar pb;
     private Button add_event;
+    private String type;
 
 
     public EventFragment() {
@@ -82,9 +84,26 @@ public class EventFragment extends Fragment {
         getPhoto();
         getEvents();
 
-        adapter = new EventAdapter(Objects.requireNonNull(getActivity()), R.layout.event_item, mediaList);
+        adapter = new EventAdapter(getActivity(), R.layout.event_item, mediaList);
         mainList.setAdapter(adapter);
         mainList.scrollToPosition(adapter.getItemCount() -1);
+
+        mediaList.clear();
+        add_event.setVisibility(View.GONE);
+        myRef.child("users").child(mAuth.getCurrentUser().getUid()).child("user_type").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                type = dataSnapshot.getValue(String.class);
+                if ((type.equals("admin")) || (type.equals("super_admin"))) {
+                    add_event.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         add_event.setOnClickListener(v -> startActivity(new Intent(getContext(), AddEvent.class)));
 
@@ -92,12 +111,10 @@ public class EventFragment extends Fragment {
 
 
 
-
-
     private void getPhoto(){
 
         Query query = myRef.child("Events").child("photos").orderByChild("date_added");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -118,7 +135,7 @@ public class EventFragment extends Fragment {
     private void getEvents(){
 
         Query query = myRef.child("Events").child("textevents").orderByChild("date_added");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -128,18 +145,6 @@ public class EventFragment extends Fragment {
                     mediaList.add(event);
                     adapter.notifyDataSetChanged();
                 }
-//                Collections.sort(mediaList, new Comparator<Object>() {
-//                    @Override
-//                    public int compare(Object o1, Object o2) {
-//                        Log.d("TAG","Comparing...");
-//                        if (o1.getClass() == Video.class && o2.getClass() == Video.class) {
-//                            Video p1 = (Video) o1;
-//                            Video p2 = (Video) o2;
-//                            return p2.getDate_added().compareTo(p1.getDate_added());
-//                        }
-//                        return 0;
-//                    }
-//                });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

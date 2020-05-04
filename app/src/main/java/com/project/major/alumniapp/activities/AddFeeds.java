@@ -86,7 +86,7 @@ public class AddFeeds extends AppCompatActivity {
         feedimage.setOnClickListener(v -> selectAlbum());
 
         uploadFeed.setOnClickListener(v -> {
-            if (mAlbumFiles.get(0) != null){
+            if (mAlbumFiles != null){
                 upload(mAlbumFiles.get(0));
             } else {
                 upload();
@@ -142,12 +142,12 @@ public class AddFeeds extends AppCompatActivity {
             uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                 String url = uri1.toString();
                 Photo photo = new Photo(id, name, user_id, date_added, captio, tags, url, profileImg);
-//            new Fcm(this,"new_post", "Alumni APP", user.getDisplayName() + " added a post", url).init()
+//                new Fcm(this,"new_post", "Alumni APP", user.getDisplayName() + " added a post", url).init();
                 NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added, id);
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user_id);
                 reference.push().setValue(notificationModel);
                 mDatabase.child("Feeds").child("photos").child(id).setValue(photo).addOnSuccessListener(aVoid -> {
-//                    new Fcm(this, "new_post", "Alumni APP", user.getDisplayName() + " added a post", url).init();
+                    new Fcm(this, "new_event", "Alumni APP", user.getDisplayName() + " added a event", url).init();
                     progressDialog.dismiss();
                     TastyToast.makeText(getApplicationContext(), "Post Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
                     finish();
@@ -203,7 +203,7 @@ public class AddFeeds extends AppCompatActivity {
                     uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
                         String url = uri1.toString();
                         Video video = new Video(id, name, user_id, date_added, captio, tags, url, profileImg );
-//                        new Fcm(AddFeeds.this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  url).init();
+                        new Fcm(AddFeeds.this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  url).init();
                         NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added, id);
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user_id);
                         reference.push().setValue(notificationModel);
@@ -255,7 +255,7 @@ public class AddFeeds extends AppCompatActivity {
         String date_added = Long.toString(System.currentTimeMillis());
 
         Feeds uploadPost = new Feeds(id, name, user_id, date_added, captio, tags, profile_img);
-//        new Fcm(this,"new_post", "Alumni APP", user.getDisplayName() + " added a post",  null).init();
+        new Fcm(this,"new_event", "Alumni APP", user.getDisplayName() + " added a Event",  null).init();
         NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added,id);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user_id);
         reference.push().setValue(notificationModel);

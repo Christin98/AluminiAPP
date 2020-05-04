@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     LinearLayout adminlayout;
     CheckBox adminbox;
     Button send_btn;
-
+    Button rmbtn;
     FirebaseAuth auth;
     DatabaseReference reference;
     FirebaseUser firebaseUser;
@@ -72,7 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
         prOrganization = findViewById(R.id.profile_organization);
         adminlayout = findViewById(R.id.checkbox_admin_layout);
         adminbox = findViewById(R.id.admin_check);
-        send_btn = findViewById(R.id.send_btn);
+        send_btn = findViewById(R.id.sndreqbtn);
+        rmbtn = findViewById(R.id.rmadbtn);
 
         id = getIntent().getStringExtra("uid");
 
@@ -87,20 +87,31 @@ public class ProfileActivity extends AppCompatActivity {
         if (id.equals(firebaseUser.getUid())) {
             adminlayout.setVisibility(View.GONE);
         } else {
-            checkadmin();
+            FirebaseDatabase.getInstance().getReference("alumni_app").child("users").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String user_type = dataSnapshot.child("user_type").getValue(String.class);
+                    if (user_type.equals("super_admin") || user_type.equals("admin")) {
+                        checkadmin();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
-        adminbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                send_btn.setVisibility(View.VISIBLE);
-                send_btn.setOnClickListener(v -> {
-                    new FcmNotification(ProfileActivity.this).sendadmin(id, firebaseUser, "request");
-                    TastyToast.makeText(ProfileActivity.this, "Request Send", TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
-                });
-            } else {
-                send_btn.setVisibility(View.GONE);
-            }
+        rmbtn.setOnClickListener(v -> {
+            FirebaseDatabase.getInstance().getReference("alumni_app").child("users").child(id).child("user_type").setValue("user");
         });
+
+        send_btn.setOnClickListener(v -> {
+            new FcmNotification(ProfileActivity.this).sendadmin(id, firebaseUser, "request");
+            TastyToast.makeText(ProfileActivity.this, "Request Send", TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
+        });
+
 
         prEdit.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class)));
 
@@ -140,10 +151,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String user_type = dataSnapshot.child("user_type").getValue(String.class);
-                if (user_type.equals("admin") || user_type.equals("super_admin")) {
-                    adminlayout.setVisibility(View.GONE);
-                } else {
-                    adminlayout.setVisibility(View.VISIBLE);
+                assert user_type != null;
+                if (user_type.equals("admin")) {
+                    rmbtn.setVisibility(View.VISIBLE);
+                } else if (user_type.equals("user")) {
+                    send_btn.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -153,4 +165,5 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -1,11 +1,11 @@
 package com.project.major.alumniapp.utils
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.app.Dialog
 import android.view.Window
 import com.project.major.alumniapp.R
 
-class LoadingDialog(private val activity: Activity) {
+class LoadingDialog(private val activity: AppCompatActivity) {
     private var dialog: Dialog? = null
     fun showLoading() {
         dialog = Dialog(activity)

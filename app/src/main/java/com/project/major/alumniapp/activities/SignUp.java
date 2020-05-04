@@ -1,13 +1,11 @@
 package com.project.major.alumniapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +18,16 @@ import android.widget.TextView;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -131,7 +124,7 @@ public class SignUp extends AppCompatActivity {
 //                    users.put("uid",current_UserID);
 //                    users.put("createdat", String.valueOf(ServerValue.TIMESTAMP));
 //                    users.put("user_thumb_image", "default_image");
-                    User user = new User(String.valueOf(System.currentTimeMillis()), current_UserID,"user", "false", "default_image", user_name, "default_image", "false", user_email, "default", "India", "default", "default", "default","default", "1990-94", "default", "default", user_name.toLowerCase());
+                    User user = new User(String.valueOf(System.currentTimeMillis()), current_UserID,"user", "false", "default_image", user_name, "default_image", "false", user_email, "default", "India", "default", "default", "default","default", "1990-94", "default", "default", user_name.toLowerCase(), "default", "default", "default", "true");
                     user_DB.setValue(user).addOnCompleteListener(task1 -> {
                         fUser = auth.getCurrentUser();
                         if (fUser != null){

@@ -1,159 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/layout_bg"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/headlayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/feed_item_padding_left_right"
-            android:paddingRight="@dimen/feed_item_padding_left_right" >
+            android:paddingRight="@dimen/feed_item_padding_left_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/white">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profilePic"
                 android:layout_width="@dimen/feed_item_profile_pic"
                 android:layout_height="@dimen/feed_item_profile_pic"
-                android:src="@drawable/profle_user"
-                android:scaleType="centerCrop" >
-            </de.hdodenhof.circleimageview.CircleImageView>
+                android:scaleType="centerCrop"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/profle_user" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="@dimen/feed_item_profile_info_padd" >
+                android:layout_marginStart="40dp"
+                android:paddingStart="@dimen/feed_item_profile_info_padd">
 
                 <TextView
                     android:id="@+id/name"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/feed_item_profile_name"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/timestamp"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/timestamp"
                     android:textSize="@dimen/feed_item_timestamp" />
+
+                <TextView
+                    android:id="@+id/txtStatusMsg"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                    android:paddingTop="@dimen/feed_item_status_pad_top"
+                    android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                    android:paddingBottom="5dp"
+                    android:text="Caption" />
+
+                <TextView
+                    android:id="@+id/tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:linksClickable="true"
+                    android:paddingLeft="@dimen/feed_item_status_pad_left_right"
+                    android:paddingRight="@dimen/feed_item_status_pad_left_right"
+                    android:paddingBottom="10dp"
+                    android:text="Link"
+                    android:textColorLink="@color/link" />
             </LinearLayout>
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/optionsfeed"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_option_menu" />
 
-        <TextView
-            android:id="@+id/txtStatusMsg"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingLeft="@dimen/feed_item_status_pad_left_right"
-            android:paddingRight="@dimen/feed_item_status_pad_left_right"
-            android:text="Caption"
-            android:paddingTop="@dimen/feed_item_status_pad_top" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tags"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:linksClickable="true"
-            android:paddingBottom="10dp"
-            android:paddingLeft="@dimen/feed_item_status_pad_left_right"
-            android:text="Link"
-            android:paddingRight="@dimen/feed_item_status_pad_left_right"
-            android:textColorLink="@color/link" />
-
-    <RelativeLayout
-        android:id="@+id/media_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.Holo.Light.ProgressBar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerInParent="true"
-            android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/video_indicater"
-            android:layout_width="77dp"
-            android:layout_height="77dp"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-            app:srcCompat="@drawable/ic_option_video" />
-
-        <com.project.major.alumniapp.utils.SquareImageView
-            android:id="@+id/feedImage1"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginStart="3dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder"
-            android:visibility="visible" />
-    </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/like_comment_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="3dp"
-        android:orientation="horizontal">
-
-        <com.like.LikeButton
-            android:id="@+id/heart_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:icon_size="22dp"
-            app:anim_scale_factor="3"
-            app:icon_type="heart" />
-
-        <ImageView
-            android:id="@+id/comment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="6dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_action_comment" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/like_comment_layout"
-        android:layout_marginBottom="5dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/like_number"
+        <RelativeLayout
+            android:id="@+id/media_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/iran_sans_mobile"
-            android:padding="2dp"
-            android:text="Like"
-            android:paddingStart="5dp"
-            android:textColor="@color/black" />
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headlayout1">
+
+            <ImageView
+                android:id="@+id/feedImage1"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/placeholder"
+                android:visibility="visible" />
+
+            <com.touchlane.exovideo.ExoVideoView
+                android:id="@+id/video_post"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:keepScreenOn="true"
+                app:layout_constraintDimensionRatio="3:2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.Holo.Light.ProgressBar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/video_indicater"
+                android:layout_width="77dp"
+                android:layout_height="77dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_option_video" />
 
 
-        <TextView
-            android:id="@+id/view_comments"
+
+
+
+<!--            <com.google.android.exoplayer2.ui.PlayerView-->
+<!--                android:id="@+id/video_post"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:keepScreenOn="true">-->
+
+<!--            </com.google.android.exoplayer2.ui.PlayerView>-->
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/iran_sans_mobile"
-            android:padding="2dp"
-            android:paddingStart="5dp"
-            android:text="View all comment"
-            android:textColor="@color/dark_grey" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/media_layout">
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/like_comment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:orientation="horizontal">
 
-</LinearLayout>
+                <com.like.LikeButton
+                    android:id="@+id/heart_button"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:anim_scale_factor="3"
+                    app:icon_size="22dp"
+                    app:icon_type="heart" />
+
+                <ImageView
+                    android:id="@+id/comment"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="6dp"
+                    android:contentDescription="@string/app_name"
+                    app:srcCompat="@drawable/ic_action_comment" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/like_comment_layout"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/like_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:text="Like"
+                    android:textColor="@color/black" />
+
+
+                <TextView
+                    android:id="@+id/view_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/iran_sans_mobile"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:text="View all comment"
+                    android:textColor="@color/dark_grey" />
+            </LinearLayout>
+        </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

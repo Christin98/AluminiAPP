@@ -1,5 +1,6 @@
 package com.project.major.alumniapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -20,8 +21,11 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
@@ -121,25 +125,59 @@ public class Login extends AppCompatActivity {
         auth.signInWithEmailAndPassword(email,passw).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
                 Log.d("Login", "task.success");
-                Map<String, String> users = new HashMap<>();
                 String user_ID = auth.getCurrentUser().getUid();
                 user = auth.getCurrentUser();
-                boolean isVerified = false;
-                if (user != null) {
-                    isVerified = user.isEmailVerified();
-                }
-                if (isVerified) {
-                    loadingDialog.showLoading();
-                    sessionManager.createLoginSession(users.get("name"), users.get("email"), user_ID);
-                    Intent intent = new Intent(Login.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }  else {
-                    loadingDialog.hideLoading();
-                    TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
-                    signOut();
-                }
+//                boolean isVerified = false;
+//                if (user != null) {
+//                    isVerified = user.isEmailVerified();
+//                }
+                FirebaseDatabase.getInstance().getReference().child("alumni_app").child("users").child(user_ID).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user1 = dataSnapshot.getValue(User.class);
+                        if (user.isEmailVerified()) {
+                            if (Boolean.parseBoolean(user1.getFirst())) {
+                            Intent intent = new Intent(Login.this, EditProfileActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                            } else {
+                                sessionManager.createLoginSession(user.getDisplayName(), user.getEmail(), user_ID);
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else {
+                            loadingDialog.hideLoading();
+                            TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+                            signOut();
+                        }
+//                        if (Boolean.parseBoolean(user1.getFirst())) {
+//                            user_DB.child(user_ID).child("first").setValue("false");
+//                            Intent intent = new Intent(Login.this, EditProfileActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent);
+//                            finish();
+//                        } else if (user.isEmailVerified()) {
+//                            loadingDialog.showLoading();
+//                            sessionManager.createLoginSession(users.get("name"), users.get("email"), user_ID);
+//                            Intent intent = new Intent(Login.this, MainActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent);
+//                            finish();
+//                        }  else {
+//                            loadingDialog.hideLoading();
+//                            TastyToast.makeText(Login.this, "Email is not verified. Please verify first", TastyToast.LENGTH_LONG, TastyToast.INFO).show();
+//                            signOut();
+//                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             } else{
                     TastyToast.makeText(this, "Your email and password may be incorrect. Please check & try again.", TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
                 }

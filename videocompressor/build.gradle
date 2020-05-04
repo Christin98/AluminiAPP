@@ -28,5 +28,7 @@ dependencies {
     })
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.13'
-    implementation files('libs/isoparser-1.0.6.jar')
+//    implementation files('libs/isoparser-1.0.6.jar')
+    implementation group: 'com.googlecode.mp4parser', name: 'isoparser', version: '1.1.22'
+
 }

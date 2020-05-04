@@ -27,11 +27,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +45,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.project.major.alumniapp.R;
-import com.project.major.alumniapp.models.Jobs;
 import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.FileCompressor;
 import com.project.major.alumniapp.utils.LoadingDialog;
@@ -135,9 +131,6 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
-
-
         profilePic = findViewById(R.id.imageview_edit_profile);
         plusImg = findViewById(R.id.plus_img_btn);
         ImgBtnDone = findViewById(R.id.img_btn_done);
@@ -174,6 +167,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
         }else {
             profilePic.setImageResource(R.drawable.profle_user);
         }
+
 //        proPhone.setText(firebaseUser.getPhoneNumber());
 
         user_DB.addValueEventListener(new ValueEventListener() {
@@ -183,6 +177,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
                 proPhone.setText(user.getPhone());
                 proProfession.setText(user.getProfession());
                 proOrganization.setText(user.getOrganization());
+                user_DB.child("first").setValue("false");
             }
 
             @Override
@@ -1168,6 +1163,10 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
                     if (user != null) {
                         if (!user.getUser_name().equals(proName.getText().toString())){
                             user_DB.child("user_name").setValue(proName.getText().toString());
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(proName.getText().toString())
+                                    .build();
+                            user_DB.child("search_name").setValue(proName.getText().toString().toLowerCase());
                         } else if(TextUtils.isEmpty(proName.getText().toString())){
                             proName.setError("Enter Your Name.");
                         }
@@ -1201,6 +1200,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
 
                         if (!user.getCity().equals(citySpinner.getText().toString())){
                             user_DB.child("city").setValue(citySpinner.getText().toString());
+                            user_DB.child("search_city").setValue(citySpinner.getText().toString().toLowerCase());
                         } else if(TextUtils.isEmpty(citySpinner.getText().toString())){
                             citySpinner.setError("Select Your City.");
                         }
@@ -1220,6 +1220,7 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
 
                         if (!user.getProfession().equals(proProfession.getText().toString())){
                             user_DB.child("profession").setValue(proProfession.getText().toString());
+                            user_DB.child("search_profession").setValue(proProfession.getText().toString().toLowerCase());
                         } else if(TextUtils.isEmpty(proProfession.getText().toString())){
                             proProfession.setError("Enter Your Profession.");
                         }
@@ -1227,11 +1228,15 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
 
                         if (!user.getOrganization().equals(proOrganization.getText().toString())){
                             user_DB.child("organization").setValue(proOrganization.getText().toString());
+                            user_DB.child("search_organization").setValue(proOrganization.getText().toString().toLowerCase());
                         } else if(TextUtils.isEmpty(proOrganization.getText().toString())){
                             proOrganization.setError("Enter Your Organization.");
                         }
                         TastyToast.makeText(EditProfileActivity.this, "Profile Updated", TastyToast.LENGTH_SHORT, TastyToast.INFO).show();
                         loadingDialog.hideLoading();
+                        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         finish();
                     }
                 }
@@ -1552,4 +1557,6 @@ public class EditProfileActivity extends AppCompatActivity implements OnCountryP
                 .onSameThread()
                 .check();
     }
+
+
 }

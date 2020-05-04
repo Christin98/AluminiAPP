@@ -21,13 +21,17 @@ public class User {
     private String profession;
     private String organization;
     private String search_name;
+    private String search_profession;
+    private String search_organization;
+    private String search_city;
     private String verification_ID;
+    private String first;
 
     public User() {
         //This Constructor is required.
     }
 
-    public User(String createdat, String uid, String user_type, String phone_verified, String user_image, String user_name, String user_thumb_image, String verified, String email, String phone, String country, String state, String city, String nav_state, String navodhya, String batch, String profession, String organization, String search_name) {
+    public User(String createdat, String uid, String user_type, String phone_verified, String user_image, String user_name, String user_thumb_image, String verified, String email, String phone, String country, String state, String city, String nav_state, String navodhya, String batch, String profession, String organization, String search_name, String search_profession, String search_organization, String search_city, String first) {
         this.createdat = createdat;
         this.uid = uid;
         this.user_type = user_type;
@@ -47,6 +51,10 @@ public class User {
         this.profession = profession;
         this.organization = organization;
         this.search_name = search_name;
+        this.search_profession = search_profession;
+        this.search_organization = search_organization;
+        this.search_city = search_city;
+        this.first = first;
     }
 
     public String getCreatedat() {
@@ -210,11 +218,43 @@ public class User {
         this.search_name = search_name;
     }
 
+    public String getSearch_profession() {
+        return search_profession;
+    }
+
+    public void setSearch_profession(String search_profession) {
+        this.search_profession = search_profession;
+    }
+
+    public String getSearch_organization() {
+        return search_organization;
+    }
+
+    public void setSearch_organization(String search_organization) {
+        this.search_organization = search_organization;
+    }
+
+    public String getSearch_city() {
+        return search_city;
+    }
+
+    public void setSearch_city(String search_city) {
+        this.search_city = search_city;
+    }
+
     public String getVerification_ID() {
         return verification_ID;
     }
 
     public void setVerification_ID(String verification_ID) {
         this.verification_ID = verification_ID;
+    }
+
+    public String getFirst() {
+        return first;
+    }
+
+    public void setFirst(String first) {
+        this.first = first;
     }
 }

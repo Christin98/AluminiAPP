@@ -47,3 +47,10 @@
 # PubNub
 -dontwarn com.pubnub.**
 -keep class com.pubnub.** { *; }
+
+-keep class com.google.android.exoplayer2.** { *; }
+
+-keepclassmembernames class com.google.android.exoplayer2.ui.PlayerControlView {
+  java.lang.Runnable hideAction;
+  void hideAfterTimeout();
+}

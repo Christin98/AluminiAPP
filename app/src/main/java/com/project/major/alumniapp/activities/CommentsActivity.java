@@ -42,6 +42,7 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
     private String mediaId;
     private String profileImage;
     private String node;
+    private String node2;
     private ListView commentList;
     private ArrayList<Comment> list;
     private CommentListAdapter listAdapter;
@@ -66,22 +67,23 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
         mediaId = mediaIntent.getStringExtra("mediaID");
         profileImage = mediaIntent.getStringExtra("profile_photo");
         node = mediaIntent.getStringExtra("node");
+        node2 = mediaIntent.getStringExtra("node2");
 
 //        setCommentProfileImage(profileImage);
-        addComment(mediaId, node);
+        addComment(mediaId, node, node2);
 
         commentList = findViewById(R.id.comment_list);
         list = new ArrayList<>();
         listAdapter = new CommentListAdapter(CommentsActivity.this,R.layout.layout_comment,list);
-        retrieveAllComments(mediaId,20, node);
+        retrieveAllComments(mediaId,20, node, node2);
         commentList.setAdapter(listAdapter);
 
         goBack();
     }
 
-    private void retrieveAllComments( String mediaId, final long endLimit, String node){
+    private void retrieveAllComments( String mediaId, final long endLimit, String node, String node2){
 
-        Query query = myRef.child("alumni_app").child(node).child(mediaId).child("comment").orderByChild("date_added");
+        Query query = myRef.child("alumni_app").child(node).child(node2).child(mediaId).child("comment").orderByChild("date_added");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -114,14 +116,14 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
         });
     }
 
-    private void addComment( final String mediaId, String node){
+    private void addComment( final String mediaId, String node, String node2){
 
         TextView postComment = findViewById(R.id.post_comment);
         final EditText commentText = findViewById(R.id.comment);
         postComment.setOnClickListener(v -> {
             if(commentText.getText().toString().length()>0) {
                 isCommentAdded = true;
-                addNewComment(mediaId, commentText.getText().toString(), node);
+                addNewComment(mediaId, commentText.getText().toString(), node, node2);
             }
         });
     }
@@ -132,7 +134,7 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
 //        GlideImageLoader.loadImageWithOutTransition(mContext,image,profileImage);
 //    }
 
-    public void addNewComment( final String mediaId, final String comment, String node){
+    public void addNewComment( final String mediaId, final String comment, String node, String node2){
 
         final String commentId = myRef.push().getKey();
         final String dateAdded = Long.toString(System.currentTimeMillis());
@@ -146,10 +148,10 @@ public class CommentsActivity extends AppCompatActivity implements UtilityInterf
 
                 Comment comment_model = new Comment(comment, dateAdded, userName, profileImage, 0);
 
-                myRef.child("alumni_app").child(node).child(mediaId).child("comment")
+                myRef.child("alumni_app").child(node).child(node2).child(mediaId).child("comment")
                         .child(Objects.requireNonNull(commentId)).setValue(comment_model);
-                new FcmNotification(CommentsActivity.this).commentNotification(mAuth.getCurrentUser().getUid(), userName, profileImage, comment, node, mediaId);
-                myRef.child("alumni_app").child(node).child(mediaId).addValueEventListener(new ValueEventListener() {
+                new FcmNotification(CommentsActivity.this).commentNotification(mAuth.getCurrentUser().getUid(), userName, profileImage, comment, node, node2, mediaId);
+                myRef.child("alumni_app").child(node).child(node2).child(mediaId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String uid = (node.equals("Events"))?dataSnapshot.child("user_id").getValue(String.class):dataSnapshot.child("userId").getValue(String.class);

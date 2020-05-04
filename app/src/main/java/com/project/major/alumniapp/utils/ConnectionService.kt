@@ -1,8 +1,3 @@
-/******************************************************************************
- * Copyright (c) 2020.                                                        *
- * Christin B Koshy.                                                          *
- * 2                                                                          *
- */
 @file:Suppress("DEPRECATION")
 
 package com.project.major.alumniapp.utils
@@ -54,15 +49,9 @@ class ConnectionService : Service() {
                         if (show && ConnectionHelper.isOnline) {
                             ConnectionHelper.isOnline = false
                             Log.i("NETWORK123", "Connection lost")
-                            val builder: AlertDialog
-                            builder = AlertDialog.Builder(context)
-                                    .setTitle("NO CONNECTION")
-                                    .setMessage("No network connection available. Please connect to internet and try again")
-                                    .setCancelable(false)
-                                    .setPositiveButton("OK") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-                                    .create()
-                            builder.window!!.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT)
-                            builder.show()
+                            val tastyToast = TastyToast.makeText(context, "Internet Connection Not Available.\n Please Connect To Network and Retry.", TastyToast.LENGTH_LONG, TastyToast.WARNING)
+                            tastyToast.setGravity(Gravity.CENTER, 0, 0)
+                            tastyToast.show()
                         }
                     } else {
                         Log.i("NETWORK123", "Connected")

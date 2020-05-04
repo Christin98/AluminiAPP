@@ -163,8 +163,8 @@ public class FcmNotification {
         });
     }
 
-    public void commentNotification(String uid, String userName, String profile, String comment, String node, String mediaId) {
-        FirebaseDatabase.getInstance().getReference("alumni_app").child(node).child(mediaId).addValueEventListener(new ValueEventListener() {
+    public void commentNotification(String uid, String userName, String profile, String comment, String node, String node2, String mediaId) {
+        FirebaseDatabase.getInstance().getReference("alumni_app").child(node).child(node2).child(mediaId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (node.equals("Feeds")) {
@@ -234,7 +234,6 @@ public class FcmNotification {
         FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(id).push().setValue(not1);
         NotificationModel not2 = new NotificationModel(type, "You", String.valueOf(System.currentTimeMillis()), id);
         FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user.getUid()).push().setValue(not2);
-
         getToken(id);
         try {
             obj = new JSONObject();

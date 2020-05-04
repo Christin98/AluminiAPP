@@ -28,12 +28,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup"
-        tools:targetApi="p">
+        tools:targetApi="q">
+        <activity android:name=".activities.EditJobActivity"></activity>
+        <activity android:name=".activities.EditEventsActivity" />
+        <activity android:name=".activities.EditFeedsActivity" />
+        <activity android:name=".activities.ViewPostActivity" />
         <activity android:name=".activities.ResetPasswordActivity" />
         <activity android:name=".activities.JobActivity" />
         <activity android:name=".activities.EditProfileActivity" />
@@ -50,6 +55,7 @@
         <activity android:name=".utils.LoadingDialog" />
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.SignUp"
@@ -77,6 +83,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -84,7 +91,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
     </application>
 

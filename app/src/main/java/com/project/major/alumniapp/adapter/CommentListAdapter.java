@@ -1,6 +1,5 @@
 package com.project.major.alumniapp.adapter;
 
-import android.app.Activity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.format.DateUtils;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.models.Comment;
@@ -26,12 +26,12 @@ import java.util.Objects;
 
 public class CommentListAdapter extends ArrayAdapter<Comment> {
 
-    private Activity mContext;
+    private AppCompatActivity mContext;
     private int layoutResource;
     private long limit=20;
     private UtilityInterface utilityInterface;
 
-    public CommentListAdapter(@NonNull Activity context, int resource, ArrayList<Comment> comments) {
+    public CommentListAdapter(@NonNull AppCompatActivity context, int resource, ArrayList<Comment> comments) {
         super(context,resource,comments);
         mContext = context;
         layoutResource = resource;

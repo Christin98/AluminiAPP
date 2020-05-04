@@ -10,13 +10,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,22 +71,49 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation_view);
         bottomNavigationView = findViewById(R.id.navigationBottom);
-        drawerLayout = findViewById(R.id.drawer_lay);
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
         layoutParams.setBehavior(new BottomLayoutBehaviour());
         bottomNavigationView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         setSupportActionBar(toolbar);
-        drawerToggle = new  ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout = findViewById(R.id.drawer_lay);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        drawerToggle = new  ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
         drawerLayout.addDrawerListener(drawerToggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Feeds");
+        drawerLayout.post(() -> drawerToggle.syncState());
         setNavDraw();
         View hView = navigationView.getHeaderView(0);
         ImageView imgvw = hView.findViewById(R.id.nav_header_imageView);
+        ImageView imgbg = hView.findViewById(R.id.nav_header_imageView_badge);
         TextView tv = hView.findViewById(R.id.nav_header_textView);
-        loadFragment(new FeedsFragment());
-        drawerToggle.syncState();
+        String fragment = getIntent().getStringExtra("fragment");
+        getSupportActionBar().setTitle("Feeds");
+
+        // If menuFragment is defined, then this activity was launched with a fragment selection
+        if (fragment != null) {
+
+            // Here we can decide what do to -- perhaps load other parameters from the intent extras such as IDs, etc
+            if (fragment.equals("event")) {
+                loadFragment(new EventFragment());
+            } else {
+                loadFragment(new FeedsFragment());
+            }
+        } else {
+            // Activity was not launched with a menuFragment selected -- continue as if this activity was opened from a launcher (for example)
+            loadFragment(new FeedsFragment());
+        }
+
 
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
@@ -107,7 +139,40 @@ public class MainActivity extends AppCompatActivity {
                     if (url.equals("default")){
                         imgvw.setImageResource(R.drawable.profle_user);
                     } else {
-                        ImageUtils.loadImageCenterCrop(GlideApp.with(MainActivity.this), url, imgvw, 100, 100);
+                        ImageUtils.loadImageWithCircle(GlideApp.with(getApplicationContext()), url, imgvw, 100, 100);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            reference.child("user_type").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String usertype = dataSnapshot.getValue(String.class);
+                    if (usertype.equals("super_admin")) {
+                        Glide.with(getApplicationContext())
+                                .load(R.drawable.ic_badge)
+                                .apply(RequestOptions.circleCropTransform())
+                                .override(25, 25)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(imgbg);
+                    } else if (usertype.equals("admin")) {
+                        Glide.with(getApplicationContext())
+                                .load(R.drawable.ic_badge2)
+                                .apply(RequestOptions.circleCropTransform())
+                                .override(25, 25)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(imgbg);
+                    } else {
+                        Glide.with(getApplicationContext())
+                                .load(R.drawable.ic_badge3)
+                                .apply(RequestOptions.circleCropTransform())
+                                .override(25, 25)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(imgbg);
                     }
                 }
 
@@ -127,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setNavDraw() {
-        drawerLayout = findViewById(R.id.drawer_lay);
         NavigationView navigationView = findViewById(R.id.navigation_view);
 
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -209,8 +273,31 @@ public class MainActivity extends AppCompatActivity {
         // load fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_layout, fragment);
-//        transaction.addToBackStack();
         transaction.commit();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // TODO Auto-generated method stub
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT | Gravity.START)) {
+            drawerLayout.closeDrawers();
+            return;
+        }
+        super.onBackPressed();
     }
 
 }

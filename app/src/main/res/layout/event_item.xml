@@ -87,7 +87,17 @@
                     android:fontFamily="@font/iran_sans_mobile"
                     android:textColor="@color/blue" />
 
+
             </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/optionsevent"
+                android:layout_width="25dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_option_menu" />
 
         </RelativeLayout>
 
@@ -152,14 +162,14 @@
                     app:like_drawable="@drawable/thumb_on"
                     app:unlike_drawable="@drawable/thumb_off" />
 
-                <com.like.LikeButton
-                    android:id="@+id/thumb_button2"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    app:anim_scale_factor="3"
-                    app:icon_size="22dp"
-                    app:like_drawable="@drawable/ic_unlikec"
-                    app:unlike_drawable="@drawable/ic_unlike" />
+<!--                <com.like.LikeButton-->
+<!--                    android:id="@+id/thumb_button2"-->
+<!--                    android:layout_width="32dp"-->
+<!--                    android:layout_height="32dp"-->
+<!--                    app:anim_scale_factor="3"-->
+<!--                    app:icon_size="22dp"-->
+<!--                    app:like_drawable="@drawable/ic_unlikec"-->
+<!--                    app:unlike_drawable="@drawable/ic_unlike" />-->
 
                 <ImageView
                     android:id="@+id/comment"
@@ -167,7 +177,7 @@
                     android:layout_height="32dp"
                     android:layout_marginStart="6dp"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_action_comment" />
+                    app:srcCompat="@drawable/ic_action_comment" />
 
             </LinearLayout>
 

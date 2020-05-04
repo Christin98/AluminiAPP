@@ -7,6 +7,7 @@ public class NotificationModel {
     private String name;
     private String date;
     private String id;
+    private String eventName;
 
     public NotificationModel() {
         //required
@@ -17,6 +18,14 @@ public class NotificationModel {
 //        this.name = name;
 //        this.date = date;
 //    }
+
+    public NotificationModel(String type, String name, String date, String id, String eventName) {
+        this.type = type;
+        this.name = name;
+        this.date = date;
+        this.id = id;
+        this.eventName = eventName;
+    }
 
     public NotificationModel(String type, String name, String date, String id) {
         this.type = type;
@@ -55,5 +64,13 @@ public class NotificationModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 }

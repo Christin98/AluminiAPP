@@ -155,12 +155,14 @@ public class ImageUtils {
         }
     }
 
-    public static void loadImageWithSimpleTarget(GlideRequests glideRequests, String url, SimpleTarget<Bitmap> simpleTarget) {
-        glideRequests.asBitmap()
+    public static void loadImageWithCircle(GlideRequests glideRequests, String url, ImageView imageView,
+                                           int width, int height) {
+        glideRequests
                 .load(url)
+                .apply(RequestOptions.circleCropTransform())
+                .override(width, height)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .fitCenter()
-                .into(simpleTarget);
+                .into(imageView);
     }
 
     public static void loadImageWithSimpleTarget(GlideRequests glideRequests, StorageReference imageStorageRef, SimpleTarget<Bitmap> simpleTarget) {

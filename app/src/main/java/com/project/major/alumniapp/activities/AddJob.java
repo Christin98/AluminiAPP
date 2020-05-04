@@ -1,8 +1,3 @@
-/******************************************************************************
- * Copyright (c) 2020.                                                        *
- * Christin B Koshy.                                                          *
- * 1                                                                          *
- ******************************************************************************/
 
 package com.project.major.alumniapp.activities;
 
@@ -29,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -64,13 +60,20 @@ public class AddJob extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     StorageReference jobrefrence;
-    EditText comapnyname_et, jobprofile_et,jobdescription_et,lastdate_et,joblocation_et;
+    EditText comapnyname_et;
+    EditText jobprofile_et;
+    EditText jobdescription_et;
+    EditText lastdate_et;
+    EditText joblocation_et;
+    EditText apply;
     Spinner exp_spinner;
     Button uploadJob;
     SquareImageView companyLogo;
     String imgPath;
     String item;
     Calendar calendar;
+
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class AddJob extends AppCompatActivity {
 
         requestMultiplePermissions();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("alumni_app").getRef();
+        mDatabase = FirebaseDatabase.getInstance().getReference("alumni_app");
         jobrefrence = FirebaseStorage.getInstance().getReference("alumni_app").child("job_pics");
         companyLogo = findViewById(R.id.company_logo);
         uploadJob = findViewById(R.id.uploadJob);
@@ -89,6 +92,8 @@ public class AddJob extends AppCompatActivity {
         lastdate_et = findViewById(R.id.last_date_et);
         joblocation_et = findViewById(R.id.job_location_et);
         exp_spinner = findViewById(R.id.exp_spinner);
+        apply = findViewById(R.id.apply_link);
+        auth = FirebaseAuth.getInstance();
         calendar = Calendar.getInstance(TimeZone.getDefault());
         DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
@@ -261,6 +266,8 @@ public class AddJob extends AppCompatActivity {
         final String jobdescription = jobdescription_et.getText().toString();
         final String lastdate = lastdate_et.getText().toString();
         final String location = joblocation_et.getText().toString();
+        final String userId = auth.getCurrentUser().getUid();
+        final String applyLink = apply.getText().toString();
         final String id = mDatabase.push().getKey();
         FileCompressor compressor = new FileCompressor(getApplicationContext());
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -273,7 +280,7 @@ public class AddJob extends AppCompatActivity {
         uploadTask = storageReference.putFile(compressor.imageCompressor(path),metadata);
         uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri1 -> {
             String  url = uri1.toString();
-            Jobs uploadJobs = new Jobs("alumniapp"+id, url, comapnyName, jobProfile, jobdescription, lastdate, item, location);
+            Jobs uploadJobs = new Jobs(id, url, comapnyName, jobProfile, jobdescription, lastdate, item, location, userId, applyLink);
             mDatabase.child("Jobs").child(id).setValue(uploadJobs).addOnSuccessListener(aVoid -> {
                 progressDialog.dismiss();
                 TastyToast.makeText(getApplicationContext(), "Post Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();
@@ -296,13 +303,15 @@ public class AddJob extends AppCompatActivity {
         final String jobdescription = jobdescription_et.getText().toString();
         final String lastdate = lastdate_et.getText().toString();
         final String location = joblocation_et.getText().toString();
+        final String applyLink = apply.getText().toString();
+        final String userId = auth.getCurrentUser().getUid();
         final String id = mDatabase.push().getKey();
         final ProgressDialog progressDialog=new ProgressDialog(this);
         progressDialog.setCancelable(true);
         progressDialog.setMessage("Adding Event ....");
         progressDialog.show();
 
-        final Jobs uploadPost = new Jobs(id, null, comapnyName, jobProfile, jobdescription, lastdate, item, location);
+        final Jobs uploadPost = new Jobs(id, null, comapnyName, jobProfile, jobdescription, lastdate, item, location, userId, applyLink);
         mDatabase.child("Jobs").child(id).setValue(uploadPost).addOnSuccessListener(aVoid -> {
             progressDialog.dismiss();
             TastyToast.makeText(this, "Event Added ", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show();

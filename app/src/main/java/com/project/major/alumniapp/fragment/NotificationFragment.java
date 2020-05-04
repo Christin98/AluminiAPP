@@ -3,6 +3,7 @@ package com.project.major.alumniapp.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,7 +72,7 @@ public class NotificationFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         recyclerView = view.findViewById(R.id.notification_recyclerView);
         textView = view.findViewById(R.id.textView4);
-        loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog = new LoadingDialog((AppCompatActivity) getActivity());
         firebaseUser = mAuth.getCurrentUser();
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
@@ -105,11 +106,14 @@ public class NotificationFragment extends Fragment {
                 textView.setVisibility(View.GONE);
                 String type = notificationModel.getType();
                 CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(Long.parseLong(notificationModel.getDate()), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
-                holder.type.setText(notificationModel.getType());
+                holder.type.setText(notificationModel.getType().toUpperCase());
                 holder.time.setText(timeAgo);
                 switch (type){
                     case "post":
                         holder.text.setText(String.format("%s added a post.", notificationModel.getName()));
+                        if (notificationModel.getEventName() != null) {
+                            holder.type.setText(notificationModel.getEventName().toUpperCase());
+                        }
                         break;
                     case "comment":
                         holder.text.setText(String.format("%s commented on your post.", notificationModel.getName()));

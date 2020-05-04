@@ -2,12 +2,6 @@ package com.project.major.alumniapp.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +13,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +36,7 @@ import com.project.major.alumniapp.models.User;
 import com.project.major.alumniapp.utils.LoadingDialog;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ConnectFragment extends Fragment {
 
@@ -51,9 +52,12 @@ public class ConnectFragment extends Fragment {
     private String likeId;
     private String mLikesString;
     private StringBuilder mStringBuilder;
-    private String[] filt = {"city"};
-    private String quer = "jaipur";
-    private LoadingDialog loadingDialog;
+    private boolean isCity = false;
+    private boolean isProfession = false;
+    private boolean isOrganization = false;
+    private boolean isName = false;
+    private String quer = null;
+//    private LoadingDialog loadingDialog;
     TextView textView;
 
     FloatingActionButton filter_fab;
@@ -78,21 +82,18 @@ public class ConnectFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         recyclerView = view.findViewById(R.id.user_recyclerView);
         filter_fab = view.findViewById(R.id.filter_fab);
-        textView = view.findViewById(R.id.textView4);
+        textView = view.findViewById(R.id.textView5);
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        loadingDialog = new LoadingDialog(getActivity());
+//        loadingDialog = new LoadingDialog((AppCompatActivity) getContext());
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         searchList = new ArrayList<>();
         listAdapter = new UserListAdapter(getContext(), searchList);
-        loadingDialog.showLoading();
         recyclerView.setAdapter(listAdapter);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("alumni_app").child("users");
         databaseReference.keepSynced(true);
-
-        fetch(quer);
 
         filter_fab.setOnClickListener(v -> showbottomsheet());
 
@@ -106,7 +107,6 @@ public class ConnectFragment extends Fragment {
         CheckBox org;
         CheckBox place;
         Button apply;
-        StringBuilder stringBuilder;
 
         View view = getLayoutInflater().inflate(R.layout.bottom_sheet_filter, null);
         BottomSheetDialog dialog = new BottomSheetDialog(getContext());
@@ -116,72 +116,122 @@ public class ConnectFragment extends Fragment {
         org = view.findViewById(R.id.organization_fil);
         place = view.findViewById(R.id.place_fil);
         apply = view.findViewById(R.id.apply_fil);
-        stringBuilder = new StringBuilder();
 
         prof.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                stringBuilder.append("profession");
-                stringBuilder.append(",");
+                isProfession = true;
             }
         });
 
         name.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                stringBuilder.append("search_name");
-                stringBuilder.append(",");
+               isName = true;
             }
         });
 
         org.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                stringBuilder.append("organization");
-                stringBuilder.append(",");
+                isOrganization = true;
             }
         });
 
         place.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                stringBuilder.append("city");
-                stringBuilder.append(",");
+                isCity = true;
             }
         });
 
-        apply.setOnClickListener(v ->{
-            filt = stringBuilder.toString().split(",");
-            dialog.dismiss();
-        });
+        apply.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
 
-        for (String s : filt) {
-            Log.d("TAG", s);
-        }
     }
 
     private void fetch(String keyword) {
         textView.setVisibility(View.GONE);
         if (keyword.length() > 0) {
-            for (String s : filt) {
-                Query query = FirebaseDatabase.getInstance().getReference("alumni_app").child("users").orderByChild(s).startAt(keyword.toUpperCase()).endAt(keyword.toLowerCase() + "\uf8ff");
-                query.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            Log.d("TAG", "onDataChange: "+dataSnapshot.getValue());
-                            searchList.add(singleSnapshot.getValue(User.class));
-                            listAdapter.notifyDataSetChanged();
-                            loadingDialog.hideLoading();
+            searchList.clear();
+            FirebaseDatabase.getInstance().getReference().child("alumni_app").child("users").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        User user = dataSnapshot1.getValue(User.class);
+                        if (isCity && isName && isProfession && isOrganization) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword) || user.getOrganization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity && isName && isOrganization) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_organization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity && isName && isProfession) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isName && isProfession && isOrganization) {
+                            if (user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword) || user.getOrganization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity && isProfession && isOrganization) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword) || user.getOrganization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isName && isCity) {
+                            if (user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isName && isProfession) {
+                            if (user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isName && isOrganization) {
+                            if (user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_organization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity && isProfession) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity && isOrganization) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_organization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isProfession && isOrganization) {
+                            if (user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword) || user.getSearch_organization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isCity) {
+                            if (user.getSearch_city().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isName) {
+                            if (user.getSearch_name().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isProfession) {
+                            if (user.getSearch_profession().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
+                        } else if (isOrganization) {
+                            if (user.getSearch_organization().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                                searchList.add(user);
+                            }
                         }
-
+                        else {
+                            textView.setText("No Users Found");
+                        }
                     }
+                    listAdapter.notifyDataSetChanged();
+                    //                    else if () {
+//
+//                    }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        searchList.clear();
-//                        listAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -191,8 +241,8 @@ public class ConnectFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        SearchView searchView = (SearchView) item.getActionView();
+        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
 //        item.setActionView(searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -200,7 +250,6 @@ public class ConnectFragment extends Fragment {
                 searchList.clear();
                 listAdapter.notifyDataSetChanged();
                 quer = query.trim().toLowerCase();
-                loadingDialog.showLoading();
                 fetch(quer);
                 return false;
             }
@@ -215,7 +264,6 @@ public class ConnectFragment extends Fragment {
             }
         });
     }
-
 
 }
 

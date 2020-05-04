@@ -10,20 +10,22 @@ package com.project.major.alumniapp.models;
 
 public class Jobs {
 
-    String id;
-    String companyImage;
-    String companyName;
-    String jobProfile;
-    String jobDescription;
-    String lastDate;
-    String experience;
-    String location;
+    private String id;
+    private String companyImage;
+    private String companyName;
+    private String jobProfile;
+    private String jobDescription;
+    private String lastDate;
+    private String experience;
+    private String location;
+    private String userId;
+    private String applyLink;
 
     public Jobs(){
 
     }
 
-    public Jobs(String id, String companyImage, String companyName, String jobProfile, String jobDescription, String lastDate, String experience, String location) {
+    public Jobs(String id, String companyImage, String companyName, String jobProfile, String jobDescription, String lastDate, String experience, String location, String userId, String applyLink) {
         this.id = id;
         this.companyImage = companyImage;
         this.companyName = companyName;
@@ -32,6 +34,8 @@ public class Jobs {
         this.lastDate = lastDate;
         this.experience = experience;
         this.location = location;
+        this.userId = userId;
+        this.applyLink = applyLink;
     }
 
     public String getId() {
@@ -96,5 +100,21 @@ public class Jobs {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getApplyLink() {
+        return applyLink;
+    }
+
+    public void setApplyLink(String applyLink) {
+        this.applyLink = applyLink;
     }
 }

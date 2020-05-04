@@ -4,7 +4,9 @@ package com.project.major.alumniapp.utils;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -22,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.project.major.alumniapp.R;
+import com.project.major.alumniapp.activities.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseIIDService";
@@ -182,15 +185,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void handleNewPostCreatedAction(RemoteMessage remoteMessage) {
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-//        PendingIntent pendingIntent;
-//
-//        if (backIntent != null) {
-//            backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            Intent[] intents = new Intent[]{backIntent, intent};
-//            pendingIntent = PendingIntent.getActivities(this, notificationId++, intents, PendingIntent.FLAG_ONE_SHOT);
-//        } else {
-//            pendingIntent = PendingIntent.getActivity(this, notificationId++, intent, PendingIntent.FLAG_ONE_SHOT);
-//        }
+        Intent intent = new Intent(this, MainActivity.class);
+        String topic =  remoteMessage.getFrom();
+
+        if (topic.equals("new_event")) {
+            intent.putExtra("fragment", "event");
+        } else {
+            intent.putExtra("fragment", "feed");
+        }
+
+        PendingIntent pendingIntent;
+
+        pendingIntent = PendingIntent.getActivity(this, notificationId++, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -199,7 +205,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "new_post");
         notificationBuilder.setAutoCancel(true)   //Automatically delete the notification
                 .setSmallIcon(R.drawable.notification_ic) //Notification icon
-//                .setContentIntent(pendingIntent)
+                .setContentIntent(pendingIntent)
                 .setContentTitle(remoteMessage.getData().get(TITLE_KEY))
                 .setContentText(remoteMessage.getData().get(BODY_KEY))
                 .setLargeIcon(getBitmapFromUrl(remoteMessage.getData().get(ICON_KEY)))

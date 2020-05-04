@@ -28,10 +28,6 @@
         <item>EIC</item>
     </string-array>
 
-    <string-array name="navodhya_array">
-        <item></item>
-    </string-array>
-
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
 
@@ -293,5 +289,8 @@
     <string name="hint_filter_after_visibility">Did you show the filtered files?</string>
     <string name="filter_after_visibility_visible">Show</string>
     <string name="filter_after_visibility_gone">Hide</string>
+
+    <string name="drawer_open">Drawer Opened</string>
+    <string name="drawer_close">Drawer Closed</string>
 
 </resources>

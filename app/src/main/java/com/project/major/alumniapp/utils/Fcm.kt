@@ -25,15 +25,15 @@ class Fcm(var context: Context?, var topics: String?, var title: String?, var ms
     val topic = "/topics/" + topics //topic has to match what the receiver subscribed to
 
     val notification = JSONObject()
-    val notifcationBody = JSONObject()
+    val notificationBody = JSONObject()
 
     try {
-        notifcationBody.put("title", title)
-        notifcationBody.put("message", msg) //Enter your notification message
-        notifcationBody.put("icon", url)
-        notifcationBody.put("actionType", "new_post")
+        notificationBody.put("title", title)
+        notificationBody.put("message", msg) //Enter your notification message
+        notificationBody.put("icon", url)
+        notificationBody.put("actionType", "new_post")
         notification.put("to", topic)
-        notification.put("data", notifcationBody)
+        notification.put("data", notificationBody)
         Log.e("TAG", "try")
     } catch (e: JSONException) {
         Log.e("TAG", "onCreate: " + e.message)

@@ -195,8 +195,8 @@ public class AddEvent extends AppCompatActivity {
             uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                 String url = uri.toString();
                 Event photo = new Event(id, eventName, description, location, time, date, url, tags, user_id, user_name, date_added, profileImg);
-//                new Fcm(this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  url).init();
-                NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added, id);
+                new Fcm(this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  url).init();
+                NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added, id, eventName);
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user_id);
                 reference.push().setValue(notificationModel);
                 mDatabase.child("Events").child("photos").child(id).setValue(photo).addOnSuccessListener(aVoid -> {
@@ -238,8 +238,8 @@ public class AddEvent extends AppCompatActivity {
         progressDialog.show();
         String date_added = Long.toString(System.currentTimeMillis());
         final Event uploadPost = new Event(id, eventName, description, location, time, date,null, tags, user_id, user_name, date_added, profileImg);
-//        new Fcm(this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  null).init();
-        NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added,id);
+        new Fcm(this,"new_event", "Alumni APP", user.getDisplayName() + " added a event",  null).init();
+        NotificationModel notificationModel = new NotificationModel("post", user.getDisplayName(), date_added, id, eventName);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("alumni_app").child("notification").child(user_id);
         reference.push().setValue(notificationModel);
         mDatabase.child("Events").child("textevents").child(id).setValue(uploadPost).addOnSuccessListener(aVoid -> {

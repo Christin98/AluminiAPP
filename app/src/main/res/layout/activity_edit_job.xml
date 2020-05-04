@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.EditJobActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize">
+        <LinearLayout
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/ucompanyname_et"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:hint="Comapny Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/ujobprofile_et"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:hint="Job Profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/ujob_description_et"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:hint="Job Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/ulast_date_et"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:hint="Last Date To Apply"
+                android:clickable="true"
+                android:inputType="date"
+                android:focusable="false"
+                android:longClickable="false"
+                android:cursorVisible="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <Spinner
+                android:id="@+id/uexp_spinner"
+                style="@style/RegularMono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:prompt="@string/exp"
+                />
+
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/ujob_location_et"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:hint="Job Location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_marginTop="5dp"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+            <EditText
+                style="@style/RegularMono"
+                android:layout_gravity="center"
+                android:id="@+id/uapply_link"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:hint="Apply Link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+            <Button
+                style="@style/BoldCondensed"
+                android:textSize="20sp"
+                android:background="@drawable/roundedbutton"
+                android:textColor="@android:color/white"
+                android:layout_margin="10dp"
+                android:id="@+id/updateJob"
+                android:text="UPDATE JOB"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                style="@style/BoldCondensed"
+                android:textSize="20sp"
+                android:background="@drawable/roundedbutton"
+                android:textColor="@android:color/white"
+                android:layout_margin="10dp"
+                android:id="@+id/canceljob"
+                android:text="CANCEL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

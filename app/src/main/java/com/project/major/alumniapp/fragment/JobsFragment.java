@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,24 +13,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.project.major.alumniapp.R;
 import com.project.major.alumniapp.activities.AddJob;
-import com.project.major.alumniapp.activities.JobActivity;
+import com.project.major.alumniapp.adapter.JobsAdapter;
 import com.project.major.alumniapp.models.Jobs;
-import com.project.major.alumniapp.utils.LoadingDialog;
+
+import java.util.ArrayList;
+
+import timber.log.Timber;
 
 
 public class JobsFragment extends Fragment {
@@ -39,15 +37,9 @@ public class JobsFragment extends Fragment {
     private Button addEvent;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private FirebaseRecyclerAdapter adapter;
+    private JobsAdapter adapter;
     private FirebaseAuth mAuth;
-    private String profileImgUrl = "";
-    private boolean mLikedByCurrentUser = false;
-    private String likeId;
-    private String mLikesString;
-    private StringBuilder mStringBuilder;
-    private LoadingDialog loadingDialog;
-    TextView textView;
+   private ArrayList<Jobs> list;
 
     public JobsFragment() {
         // Required empty public constructor
@@ -64,112 +56,41 @@ public class JobsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         addEvent = view.findViewById(R.id.addJob);
         recyclerView = view.findViewById(R.id.job_recyclerView);
-        textView = view.findViewById(R.id.textView4);
-        loadingDialog = new LoadingDialog(getActivity());
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("alumni_app").child("Jobs");
+        databaseReference.keepSynced(true);
+        list = new ArrayList<>();
+        getJobs();
+        adapter = new JobsAdapter((AppCompatActivity) getActivity(), R.layout.job_item, list);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-
-        loadingDialog.showLoading();
-        fetch();
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("alumni_app").child("Jobs");
-        databaseReference.keepSynced(true);
-
+        recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount() -1);
         addEvent.setOnClickListener(v -> startActivity(new Intent(getContext(), AddJob.class)));
-
+        list.clear();
         return view;
     }
 
-    private void fetch() {
-        Query query = FirebaseDatabase.getInstance().getReference("alumni_app").child("Jobs");
-
-        FirebaseRecyclerOptions<Jobs> options = new FirebaseRecyclerOptions.Builder<Jobs>().setQuery(query, Jobs.class).build();
-
-        adapter = new FirebaseRecyclerAdapter<Jobs, JobsFragment.ViewHolder>(options) {
-
-            @NonNull
+    private void getJobs() {
+        Timber.e("getJobs", "function list jobs");
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public JobsFragment.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.job_item, parent, false);
-
-                return new ViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull JobsFragment.ViewHolder holder, int position, @NonNull Jobs jobs) {
-                textView.setVisibility(View.GONE);
-                String post_key = getRef(position).getKey();
-                if (jobs.getCompanyImage() != null) {
-                    Glide.with(getContext())
-                            .load(jobs.getCompanyImage())
-                            .apply(new RequestOptions().override(100, 100).placeholder(R.drawable.postimg).diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(R.drawable.error_img))
-                            .into(holder.companyImage);
-                    holder.companyImage.setVisibility(View.VISIBLE);
-                } else {
-                    holder.companyImage.setVisibility(View.GONE);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot datasnapshot1: dataSnapshot.getChildren()) {
+                    Jobs jobs = datasnapshot1.getValue(Jobs.class);
+                    list.add(jobs);
+                    adapter.notifyDataSetChanged();
+                    Timber.e("Job " + jobs.getCompanyName(), jobs.getCompanyName());
                 }
-                holder.companyName.setText(jobs.getCompanyName());
-                holder.jobProfile.setText(jobs.getJobProfile());
-                holder.lastDate.setText(jobs.getLastDate());
-                holder.experience.setText(jobs.getExperience());
-                holder.location.setText(jobs.getLocation());
-
-                holder.layout.setOnClickListener(v -> {
-                    Intent intent = new Intent(getContext(), JobActivity.class);
-                    intent.putExtra("id", jobs.getId());
-                    startActivity(intent);
-                });
             }
-        };
-        if(adapter.getItemCount() != 0){
-            textView.setVisibility(View.GONE);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-            loadingDialog.hideLoading();
-        }
-        recyclerView.scrollToPosition(adapter.getItemCount() -1);
-        recyclerView.setAdapter(adapter);
-    }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-
-        ImageView companyImage;
-        TextView companyName;
-        TextView jobProfile;
-        TextView lastDate;
-        TextView experience;
-        TextView location;
-        LinearLayout layout;
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            companyImage = itemView.findViewById(R.id.companyImage);
-            companyName = itemView.findViewById(R.id.companyName);
-            jobProfile = itemView.findViewById(R.id.job_profile);
-            lastDate = itemView.findViewById(R.id.last_date);
-            experience = itemView.findViewById(R.id.exprience);
-            location = itemView.findViewById(R.id.location);
-            layout = itemView.findViewById(R.id.joblayout);
-        }
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
+            }
+        });
     }
 
 }
